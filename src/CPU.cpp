@@ -99,13 +99,14 @@ bool CPU::fetchInstructionData(AddressingMode ad, uint16_t& targetAddress, uint8
     }
 }
 
-void CPU::printRegisters() const
+void CPU::printStatus() const
 {
-    std::cout << "PC: " << std::hex << static_cast<int>(registers_.PC) << std::endl;
-    std::cout << "SP: " << std::hex << static_cast<int>(registers_.SP) << std::endl;
-    std::cout << "A: "  << std::hex << static_cast<int>(registers_.A)  << std::endl;
-    std::cout << "X: "  << std::hex << static_cast<int>(registers_.X)  << std::endl;
-    std::cout << "Y: "  << std::hex << static_cast<int>(registers_.Y)  << std::endl;
+    std::cout << "CPU Cycles: " << cycle_ << "\n"
+            << "PC: " << std::hex << static_cast<int>(registers_.PC) << "\n"
+            << "SP: " << std::hex << static_cast<int>(registers_.SP) << "\n"
+            << "A: "  << std::hex << static_cast<int>(registers_.A)  << "\n"
+            << "X: "  << std::hex << static_cast<int>(registers_.X)  << "\n"
+            << "Y: "  << std::hex << static_cast<int>(registers_.Y)  << std::endl;
 
     std::cout << "Status Register: " << std::hex << static_cast<int>(registers_.P.reg) << std::endl;
 }

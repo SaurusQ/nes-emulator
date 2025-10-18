@@ -40,7 +40,7 @@ class CPU
         void clockTick();
         bool fetchInstructionData(AddressingMode ad, uint16_t& targetAddress, uint8_t& value);
 
-        void printRegisters() const;
+        void printStatus() const;
     private:
 
 

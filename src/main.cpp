@@ -7,9 +7,10 @@ int main()
 {
     CPU cpu;
 
-    while (true) cpu.clockTick();
-
-
+    while (true) {
+        cpu.clockTick();
+        cpu.printStatus();
+    }
 
     return 0;
 }

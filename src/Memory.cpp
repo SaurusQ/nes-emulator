@@ -5,19 +5,30 @@
 #include <iostream>
 
 
-constexpr size_t RAM_SIZE = 65536;
+constexpr size_t MEMORY_SIZE = 65536;
 
 Memory::Memory()
 {
-    memory_ = std::make_unique<uint8_t[]>(RAM_SIZE);
-    std::memset(memory_.get(), 0x00, RAM_SIZE);
+    memory_ = std::make_unique<uint8_t[]>(MEMORY_SIZE);
+    std::memset(memory_.get(), 0x00, MEMORY_SIZE);
 
-    std::cout << "RAM initialized" << std::endl;
+    std::cout << "Memory initialized" << std::endl;
 }
 
 Memory::~Memory()
 {
 
+}
+
+void Memory::configureRegion(uint16_t startAddress, uint16_t size, uint8_t* data)
+{
+    if (startAddress + size > MEMORY_SIZE)
+    {
+        std::cerr << "Error: Address exceeds memory region" << std::endl;
+        return;
+    }
+
+    std::memcpy(memory_.get() + startAddress, data, size);
 }
 
 void Memory::fetch(uint16_t address, uint8_t& data) const
