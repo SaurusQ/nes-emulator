@@ -59,6 +59,7 @@ bool CPU::readData(AddressingMode am, uint16_t& targetAddress, uint8_t& value, b
     uint8_t byte = 0x00;
     uint8_t lowByte = 0x00;
     uint8_t highByte = 0x00;
+    // TODO page crossing detection
 
     switch (am)
     {

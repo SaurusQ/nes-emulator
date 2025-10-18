@@ -20,17 +20,17 @@ Instruction::~Instruction()
 
 uint8_t Instruction::execute(CPU& cpu, Memory& memory)
 {
-    return method_(cpu, memory);
+    return method_(this, cpu, memory);
 }
 
-uint8_t Instruction::ADC(CPU& cpu, Memory& memory)
+uint8_t Instruction::ADC(const Instruction* ins, CPU& cpu, Memory& memory)
 {
     uint8_t mem = 0x00;
     uint16_t targetAddress = 0x0000;
     bool pageCrossed = false;
 
-    cpu.readData(mode_, targetAddress, mem, pageCrossed);
+    cpu.readData(ins->mode_, targetAddress, mem, pageCrossed);
     cpu.registers_.A += mem + cpu.registers_.P.C;
 
-    return pageCrossed ? cyclesPageCrossed_ : cycles_;
+    return pageCrossed ? ins->cyclesPageCrossed_ : ins->cycles_;
 }

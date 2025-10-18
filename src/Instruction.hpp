@@ -6,10 +6,10 @@
 
 #include <string>
 
-using OpcodeFunction = uint8_t(*)(CPU& cpu, Memory& memory);
 
 class Instruction
 {
+    using OpcodeFunction = uint8_t(*)(const Instruction* ins, CPU& cpu, Memory& memory);
     public:
         Instruction(std::string name, uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, OpcodeFunction method);
         Instruction(std::string name, uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed, OpcodeFunction method);
@@ -24,8 +24,9 @@ class Instruction
         uint8_t         bytes_;
         uint8_t         cycles_;
         uint8_t         cyclesPageCrossed_;
-
+        
         OpcodeFunction method_;
-
-        uint8_t ADC(CPU& cpu, Memory& memory);
+        
+    public:
+        static uint8_t ADC(const Instruction* ins, CPU& cpu, Memory& memory);
 };

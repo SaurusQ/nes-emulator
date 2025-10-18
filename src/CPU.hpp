@@ -19,7 +19,7 @@ typedef union
         uint8_t N : 1; // Negative
     };
     uint8_t reg;
-} StatusRegister;;
+} StatusRegister;
 
 struct Registers
 {
