@@ -20,7 +20,7 @@ Memory::~Memory()
 
 }
 
-void Memory::configureRegion(uint16_t startAddress, uint16_t size, uint8_t* data)
+void Memory::loadData(uint16_t startAddress, const uint8_t* data, size_t size)
 {
     if (startAddress + size > MEMORY_SIZE)
     {

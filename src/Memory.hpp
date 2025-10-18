@@ -11,7 +11,7 @@ class Memory
         Memory();
         ~Memory();
         
-        void configureRegion(uint16_t startAddress, uint16_t size, uint8_t* data);
+        void loadData(uint16_t startAddress, const uint8_t* programData, size_t size);
 
         void fetch(uint16_t address, uint8_t& data) const;
         void store(uint16_t address, uint8_t data);
