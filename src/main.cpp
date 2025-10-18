@@ -7,7 +7,7 @@ int main()
 {
     CPU cpu;
 
-    cpu.clockTick();
+    while (true) cpu.clockTick();
 
 
 

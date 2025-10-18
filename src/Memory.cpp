@@ -1,6 +1,4 @@
-#pragma once
-
-#include "RAM.hpp"
+#include "Memory.hpp"
 
 #include <memory>
 #include <cstring>
@@ -9,7 +7,7 @@
 
 constexpr size_t RAM_SIZE = 65536;
 
-RAM::RAM()
+Memory::Memory()
 {
     memory_ = std::make_unique<uint8_t[]>(RAM_SIZE);
     std::memset(memory_.get(), 0x00, RAM_SIZE);
@@ -17,17 +15,17 @@ RAM::RAM()
     std::cout << "RAM initialized" << std::endl;
 }
 
-RAM::~RAM()
+Memory::~Memory()
 {
 
 }
 
-void RAM::fetch(uint16_t address, uint8_t& data) const
+void Memory::fetch(uint16_t address, uint8_t& data) const
 {
     data = memory_[address];
 }
 
-void RAM::store(uint16_t address, uint8_t data)
+void Memory::store(uint16_t address, uint8_t data)
 {
     memory_[address] = data;
 }
