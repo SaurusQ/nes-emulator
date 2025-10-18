@@ -1,6 +1,9 @@
 
 #include "CPU.hpp"
 
+#include "Instruction.hpp"
+#include "OpcodeMap.hpp"
+
 #include <iostream>
 #include <iomanip>
 #include <bitset>
@@ -33,16 +36,21 @@ CPU::~CPU()
 
 void CPU::clockTick()
 {
+    // TODO delay based on how many cycles the instruction takes
+    
     uint8_t opcode = 0x00;
-
-    //std::cout << "Cycle: " << cycle_ << " PC at: " << std::hex << static_cast<int>(registers_.PC) << std::endl; 
-
     memory_.fetch(registers_.PC, opcode);
     registers_.PC++;
 
-    
-    // TODO instruction decoding and execution
+    auto it = opcodeMap.find(opcode);
+    if (it == opcodeMap.end()) {
+        //std::cerr << "Unknown opcode: " << std::hex << int(opcode) << "\n";
+        cycle_++;
+        return;
+    }
 
+    Instruction ins = it->second;
+    ins.execute(*this, memory_);
     cycle_++;
 }
 
@@ -118,8 +126,8 @@ void CPU::printStatus() const
     std::cout << "CPU Cycles: 0x" << cycle_ << "\n"
             << "PC: 0x" << std::setfill('0') << std::setw(4)<< std::hex << static_cast<int>(registers_.PC) << "\n"
             << "SP: 0x" << std::setfill('0') << std::setw(4)<< std::hex << static_cast<int>(registers_.SP) << "\n"
-            << "A:  0x"  << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.A)  << "\n"
-            << "X:  0x"  << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.X)  << "\n"
-            << "Y:  0x"  << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.Y)  << "\n"
+            << "A:  0x" << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.A)  << "\n"
+            << "X:  0x" << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.X)  << "\n"
+            << "Y:  0x" << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.Y)  << "\n"
             << "Status Register: 0b" << std::bitset<8>(registers_.P.reg) << std::endl;
 }
