@@ -10,7 +10,8 @@
 
 int main()
 {
-    CPU cpu;
+    Memory memory;
+    CPU cpu(memory);
 
     // Read binary file
     std::string fileName = "program.bin";
@@ -24,7 +25,7 @@ int main()
     std::vector<uint8_t> programData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
 
-    cpu.getMemory().loadData(0x0000, programData.data(), programData.size());
+    memory.loadData(0x0000, programData.data(), programData.size());
 
     while (true)
     {

@@ -33,8 +33,9 @@ struct Registers
 
 class CPU
 {
+    friend class Instruction;
     public:
-        CPU();
+        CPU(Memory& memory);
         ~CPU();
         void resetRegisters();
         void clockTick();
@@ -42,10 +43,9 @@ class CPU
 
         void printStatus() const;
 
-        Memory& getMemory() { return memory_; }
     private:
 
         Registers registers_;
-        Memory memory_;
+        Memory& memory_;
         uint64_t cycle_ = 0;
 };

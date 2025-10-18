@@ -5,7 +5,8 @@
 #include <iomanip>
 #include <bitset>
 
-CPU::CPU()
+CPU::CPU(Memory& memory)
+    : memory_(memory)
 {
     registers_.PC   = 0xFFFC;
     registers_.SP   = 0xFD; // Decremented by 3 after each reset
