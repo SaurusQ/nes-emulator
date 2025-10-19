@@ -1,6 +1,11 @@
 .vscode
-bin
-build
+bin/
+build/
 
 *.nes
 *.bin
+
+Makefile
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
