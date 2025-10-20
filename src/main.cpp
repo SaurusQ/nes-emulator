@@ -5,6 +5,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include <iostream>
 #include <thread>
@@ -36,6 +37,11 @@ int main(int argc, char* argv[])
     const char* backend = SDL_GetCurrentVideoDriver();
     std::cout << "SDL3 backend: " <<  backend << std::endl;
 
+    if (!TTF_Init()) {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "TTF_Init failed: %s\n", SDL_GetError());
+        return -1;
+    }
+
     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
     if (!renderer) {
         SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL_CreateRenderer failed: %s\n", SDL_GetError());
@@ -43,6 +49,8 @@ int main(int argc, char* argv[])
     }
 
     SDL_SetRenderLogicalPresentation(renderer, 800, 600, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
+    DrawHandler drawHandler(renderer);
 
     NES nes;
     nes.powerOn();
@@ -61,7 +69,10 @@ int main(int argc, char* argv[])
             lastTime = currentTime;
         }
 
-        DrawHandler::drawFrame(renderer);
+        drawHandler.drawFrame();
+        drawHandler.drawText("NES Emulator Running...", 10, 10);
+
+        SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyWindow(window);
