@@ -18,12 +18,12 @@ Instruction::~Instruction()
 
 }
 
-uint8_t Instruction::execute(CPU& cpu, Memory& memory)
+uint8_t Instruction::execute(CPU& cpu)
 {
-    return method_(this, cpu, memory);
+    return method_(this, cpu);
 }
 
-uint8_t Instruction::ADC(const Instruction* ins, CPU& cpu, Memory& memory)
+uint8_t Instruction::ADC(const Instruction* ins, CPU& cpu)
 {
     uint8_t mem = 0x00;
     uint16_t targetAddress = 0x0000;

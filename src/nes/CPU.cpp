@@ -50,7 +50,7 @@ void CPU::clockTick()
     }
 
     Instruction ins = it->second;
-    ins.execute(*this, memory_);
+    ins.execute(*this);
     cycle_++;
 }
 

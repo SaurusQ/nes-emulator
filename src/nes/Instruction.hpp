@@ -9,13 +9,13 @@
 
 class Instruction
 {
-    using OpcodeFunction = uint8_t(*)(const Instruction* ins, CPU& cpu, Memory& memory);
+    using OpcodeFunction = uint8_t(*)(const Instruction* ins, CPU& cpu);
     public:
         Instruction(std::string name, uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, OpcodeFunction method);
         Instruction(std::string name, uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed, OpcodeFunction method);
         ~Instruction();
 
-        uint8_t execute(CPU& cpu, Memory& memory);
+        uint8_t execute(CPU& cpu);
 
     private:
         std::string     name_;
@@ -28,5 +28,5 @@ class Instruction
         OpcodeFunction method_;
         
     public:
-        static uint8_t ADC(const Instruction* ins, CPU& cpu, Memory& memory);
+        static uint8_t ADC(const Instruction* ins, CPU& cpu);
 };
