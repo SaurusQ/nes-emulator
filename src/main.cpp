@@ -1,6 +1,7 @@
 
-#include "CPU.hpp"
-#include "NES.hpp"
+#include "EventHandler.hpp"
+#include "DrawHandler.hpp"
+#include "nes/NES.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -16,7 +17,7 @@ int main(int argc, char* argv[])
 {
     (void)argc;
     (void)argv;
-    
+
     SDL_Window *window;
     bool done = false;
 
@@ -24,7 +25,7 @@ int main(int argc, char* argv[])
         "NES Emulator",
         640,    // width
         480,    // height
-        0       // flags
+        SDL_WINDOW_RESIZABLE    // flags
     );
 
     if (window == NULL) {
@@ -35,6 +36,14 @@ int main(int argc, char* argv[])
     const char* backend = SDL_GetCurrentVideoDriver();
     std::cout << "SDL3 backend: " <<  backend << std::endl;
 
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
+    if (!renderer) {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL_CreateRenderer failed: %s\n", SDL_GetError());
+        return -1;
+    }
+
+    SDL_SetRenderLogicalPresentation(renderer, 800, 600, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
     NES nes;
     nes.powerOn();
 
@@ -44,17 +53,15 @@ int main(int argc, char* argv[])
     while (!done) {
         SDL_Event event;
 
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-                done = true;
-            }
-        }
+        done = EventHandler::sdlPollEvent();
 
         uint32_t currentTime = SDL_GetTicks();
         if (currentTime - lastTime >= interval) {
             nes.runCycle();
             lastTime = currentTime;
         }
+
+        DrawHandler::drawFrame(renderer);
     }
 
     SDL_DestroyWindow(window);
