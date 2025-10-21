@@ -45,6 +45,7 @@ class CPU
         std::string getRegisterStatusStr() const { return getRegisterStatusStr(false); }
         std::string getRegisterStatusStr(uint8_t& statusRegister) const;
         uint64_t getCurrentCycle() const { return cycle_; }
+        std::string getCurrentCycleStr() const { return "Cycles: " + std::to_string(cycle_); }
 
     private:
         std::string getRegisterStatusStr(bool renderVersion) const;

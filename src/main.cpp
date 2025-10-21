@@ -58,6 +58,9 @@ int main(int argc, char* argv[])
     NES nes;
     nes.powerOn();
 
+    constexpr int statusPanelX = 110;
+    constexpr int statusPanelY =  10;
+
     std::string memoryStr;
     std::string registerStr;
     uint8_t statusRegister;
@@ -84,10 +87,13 @@ int main(int argc, char* argv[])
         registerStr = nes.getCpu().getRegisterStatusStr(statusRegister);
         
         drawHandler.drawFrame();
-        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(memoryStr, 10, 10);
+
+        // Status panel
+        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(memoryStr, statusPanelX, statusPanelY);
         statusRegisterY = previousBottomY;
-        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(registerStr, 10, previousBottomY + 10);
-        drawHandler.drawStatusRegister(statusRegister, 150, statusRegisterY + 10);
+        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(registerStr, statusPanelX, previousBottomY + 20);
+        drawHandler.drawStatusRegister(statusRegister, statusPanelX + 150, statusRegisterY + 20);
+        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(nes.getCpu().getCurrentCycleStr(), statusPanelX, previousBottomY + 10);
 
         SDL_RenderPresent(renderer);
     }
