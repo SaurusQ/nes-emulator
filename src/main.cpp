@@ -1,6 +1,7 @@
 
 #include "EventHandler.hpp"
 #include "DrawHandler.hpp"
+#include "nes/Instruction.hpp"
 #include "nes/NES.hpp"
 
 #include <SDL3/SDL.h>
@@ -85,7 +86,9 @@ int main(int argc, char* argv[])
 
         memoryStr = nes.getMemory().getMemoryRegionStr(0x0000, 8 * 16);
         registerStr = nes.getCpu().getRegisterStatusStr(statusRegister);
+
         
+
         drawHandler.drawFrame();
 
         // Status panel
@@ -94,6 +97,12 @@ int main(int argc, char* argv[])
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(registerStr, statusPanelX, previousBottomY + 20);
         drawHandler.drawStatusRegister(statusRegister, statusPanelX + 150, statusRegisterY + 20);
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(nes.getCpu().getCurrentCycleStr(), statusPanelX, previousBottomY + 10);
+        
+        auto instruction = nes.getCpu().getCurrentInstruction();
+        if (instruction != nullptr)
+        {
+            std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(instruction->getStr(), statusPanelX, previousBottomY + 20);
+        }
 
         SDL_RenderPresent(renderer);
     }

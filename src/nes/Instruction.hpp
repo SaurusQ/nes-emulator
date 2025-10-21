@@ -9,24 +9,40 @@
 
 class Instruction
 {
-    using OpcodeFunction = uint8_t(*)(const Instruction* ins, CPU& cpu);
     public:
-        Instruction(std::string name, uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, OpcodeFunction method);
-        Instruction(std::string name, uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed, OpcodeFunction method);
+        Instruction(uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles);
+        Instruction(uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed);
         ~Instruction();
 
-        uint8_t execute(CPU& cpu);
+        virtual uint8_t execute(CPU& cpu) const {
+            uint8_t mem = 0x00;
+            uint16_t targetAddress = 0x0000;
+            bool pageCrossed = false;
 
-    private:
-        std::string     name_;
+            cpu.readData(mode_, targetAddress, mem, pageCrossed);
+
+            operation(cpu, mem);
+
+            return pageCrossed ? cyclesPageCrossed_ : cycles_;
+        }
+
+        virtual void operation(CPU& cpu, uint8_t mem) const = 0;
+        virtual std::string getStr() const = 0;
+
+        int getLenght() const { return bytes_; }
+
+    protected:
         uint8_t         opcode_;
         AddressingMode  mode_;
         uint8_t         bytes_;
         uint8_t         cycles_;
         uint8_t         cyclesPageCrossed_;
-        
-        OpcodeFunction method_;
-        
+};
+
+class ADC : public Instruction
+{
     public:
-        static uint8_t ADC(const Instruction* ins, CPU& cpu);
+        using Instruction::Instruction;
+        virtual void operation(CPU& cpu, uint8_t mem) const;
+        std::string getStr() const;
 };

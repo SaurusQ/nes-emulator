@@ -1,7 +1,6 @@
 
 #include "CPU.hpp"
 
-#include "Instruction.hpp"
 #include "OpcodeMap.hpp"
 
 #include <iostream>
@@ -50,8 +49,8 @@ void CPU::clockTick()
         return;
     }
 
-    Instruction ins = it->second;
-    ins.execute(*this);
+    currentInstruction_ = it->second.get();
+    currentInstruction_->execute(*this);
     cycle_++;
 }
 

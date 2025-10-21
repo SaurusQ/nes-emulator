@@ -5,6 +5,8 @@
 
 #include <cstdint>
 
+class Instruction;
+
 typedef union
 {
     struct
@@ -33,7 +35,7 @@ struct Registers
 
 class CPU
 {
-    friend class Instruction;
+    friend class ADC;
     public:
         CPU(Memory& memory);
         ~CPU();
@@ -42,16 +44,18 @@ class CPU
         bool readData(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool& pageCrossed);
 
         void printStatus() const;
+
         std::string getRegisterStatusStr() const { return getRegisterStatusStr(false); }
         std::string getRegisterStatusStr(uint8_t& statusRegister) const;
-        uint64_t getCurrentCycle() const { return cycle_; }
+        uint64_t    getCurrentCycle() const { return cycle_; }
         std::string getCurrentCycleStr() const { return "Cycles: " + std::to_string(cycle_); }
+        const Instruction* getCurrentInstruction() const { return currentInstruction_; }
 
     private:
         std::string getRegisterStatusStr(bool renderVersion) const;
 
-
         Registers registers_;
         Memory& memory_;
         uint64_t cycle_ = 0;
+        const Instruction* currentInstruction_ = nullptr;
 };

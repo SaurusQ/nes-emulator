@@ -1,14 +1,14 @@
 
 #include "Instruction.hpp"
 
-Instruction::Instruction(std::string name, uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, OpcodeFunction method)
-    : Instruction::Instruction(name, opcode, mode, bytes, cycles, cycles, method)
+Instruction::Instruction(uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles)
+    : Instruction::Instruction(opcode, mode, bytes, cycles, cycles)
 {
 
 }
 
-Instruction::Instruction(std::string name, uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed, OpcodeFunction method)
-    : name_(name), opcode_(opcode), mode_(mode), bytes_(bytes), cycles_(cycles), cyclesPageCrossed_(cyclesPageCrossed), method_(method)
+Instruction::Instruction(uint8_t opcode, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed)
+    : opcode_(opcode), mode_(mode), bytes_(bytes), cycles_(cycles), cyclesPageCrossed_(cyclesPageCrossed)
 {
 
 }
@@ -18,19 +18,12 @@ Instruction::~Instruction()
 
 }
 
-uint8_t Instruction::execute(CPU& cpu)
+void ADC::operation(CPU& cpu, uint8_t mem) const
 {
-    return method_(this, cpu);
+    cpu.registers_.A += mem + cpu.registers_.P.C;
 }
 
-uint8_t Instruction::ADC(const Instruction* ins, CPU& cpu)
+std::string ADC::getStr() const
 {
-    uint8_t mem = 0x00;
-    uint16_t targetAddress = 0x0000;
-    bool pageCrossed = false;
-
-    cpu.readData(ins->mode_, targetAddress, mem, pageCrossed);
-    cpu.registers_.A += mem + cpu.registers_.P.C;
-
-    return pageCrossed ? ins->cyclesPageCrossed_ : ins->cycles_;
+    return "ADC";
 }
