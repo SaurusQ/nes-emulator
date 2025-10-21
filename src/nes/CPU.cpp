@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iomanip>
 #include <bitset>
+#include <sstream>
 
 CPU::CPU(Memory& memory)
     : memory_(memory)
@@ -123,11 +124,40 @@ bool CPU::readData(AddressingMode am, uint16_t& targetAddress, uint8_t& value, b
 
 void CPU::printStatus() const
 {
-    std::cout << "CPU Cycles: 0x" << cycle_ << "\n"
-            << "PC: 0x" << std::setfill('0') << std::setw(4)<< std::hex << static_cast<int>(registers_.PC) << "\n"
-            << "SP: 0x" << std::setfill('0') << std::setw(4)<< std::hex << static_cast<int>(registers_.SP) << "\n"
-            << "A:  0x" << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.A)  << "\n"
-            << "X:  0x" << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.X)  << "\n"
-            << "Y:  0x" << std::setfill('0') << std::setw(2)<< std::hex << static_cast<int>(registers_.Y)  << "\n"
+    std::cout << "CPU Cycles: 0x" << cycle_ << "\n" << std::setfill('0') << std::uppercase
+            << "PC: 0x" << std::setw(4)<< std::hex << static_cast<int>(registers_.PC) << "\n"
+            << "SP: 0x" << std::setw(4)<< std::hex << static_cast<int>(registers_.SP) << "\n"
+            << "A:  0x" << std::setw(2)<< std::hex << static_cast<int>(registers_.A)  << "\n"
+            << "X:  0x" << std::setw(2)<< std::hex << static_cast<int>(registers_.X)  << "\n"
+            << "Y:  0x" << std::setw(2)<< std::hex << static_cast<int>(registers_.Y)  << "\n"
             << "Status Register: 0b" << std::bitset<8>(registers_.P.reg) << std::endl;
+}
+
+std::string CPU::getRegisterStatusStr(bool renderVersion) const
+{
+    std::ostringstream out;
+
+    if (renderVersion)
+    {
+        out << "STATUS: " << "\n";
+    }
+    else
+    {
+        out << "STATUS: " << std::bitset<8>(registers_.P.reg) << "\n";
+    }
+    
+    out << std::setfill('0') << std::uppercase
+        << "PC: $" << std::hex << std::setw(4) << static_cast<int>(registers_.PC) << "\n"
+        << "SP: $" << std::hex << std::setw(4) << static_cast<int>(registers_.SP) << "\n"
+        << "A:   0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.A) << std::dec << " - " << std::setw(3) << std::setfill(' ') << std::right << static_cast<int>(registers_.A) << "\n"
+        << "X:   0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.X) << std::dec << " - " << std::setw(3) << std::setfill(' ') << std::right << static_cast<int>(registers_.X) << "\n"
+        << "Y:   0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.Y) << std::dec << " - " << std::setw(3) << std::setfill(' ') << std::right << static_cast<int>(registers_.Y);
+
+    return out.str();
+}
+
+std::string CPU::getRegisterStatusStr(uint8_t& statusRegister) const
+{
+    statusRegister = registers_.P.reg;
+    return getRegisterStatusStr(true);
 }

@@ -42,8 +42,13 @@ class CPU
         bool readData(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool& pageCrossed);
 
         void printStatus() const;
+        std::string getRegisterStatusStr() const { return getRegisterStatusStr(false); }
+        std::string getRegisterStatusStr(uint8_t& statusRegister) const;
+        uint64_t getCurrentCycle() const { return cycle_; }
 
     private:
+        std::string getRegisterStatusStr(bool renderVersion) const;
+
 
         Registers registers_;
         Memory& memory_;

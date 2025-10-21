@@ -8,6 +8,15 @@ bool EventHandler::sdlPollEvent()
         if (event.type == SDL_EVENT_QUIT) {
             return true;
         }
+
+        if (event.type == SDL_EVENT_KEY_DOWN) {
+            switch (event.key.key) {
+                case SDLK_ESCAPE:
+                    return true;
+                default:
+                    break;
+            }
+        }
     }
     return false;
 }

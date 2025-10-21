@@ -38,5 +38,4 @@ void NES::reset()
 void NES::runCycle()
 {
     cpu_.clockTick();
-    cpu_.printStatus();
 }

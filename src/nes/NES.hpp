@@ -13,6 +13,7 @@ class NES
         void reset();
         void runCycle();
 
+        const CPU& getCpu() const { return cpu_; }
         const Memory& getMemory() const { return memory_; }
 
     private:

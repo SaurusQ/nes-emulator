@@ -24,4 +24,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE src lib/SDL/include lib/SDL_t
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3_ttf::SDL3_ttf SDL3::SDL3)
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+target_compile_options(${PROJECT_NAME} PRIVATE -g -O0 -Wall -Wextra)

@@ -14,6 +14,9 @@
 #include <vector>
 #include <string>
 
+constexpr int screenWidth   = 1920;
+constexpr int screenHeight  = 1080;
+
 int main(int argc, char* argv[])
 {
     (void)argc;
@@ -24,9 +27,9 @@ int main(int argc, char* argv[])
 
     window = SDL_CreateWindow(
         "NES Emulator",
-        640,    // width
-        480,    // height
-        SDL_WINDOW_RESIZABLE    // flags
+        screenWidth,
+        screenHeight,
+        SDL_WINDOW_RESIZABLE
     );
 
     if (window == NULL) {
@@ -48,7 +51,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    SDL_SetRenderLogicalPresentation(renderer, 800, 600, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    SDL_SetRenderLogicalPresentation(renderer, screenWidth, screenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
     DrawHandler drawHandler(renderer);
 
@@ -56,6 +59,12 @@ int main(int argc, char* argv[])
     nes.powerOn();
 
     std::string memoryStr;
+    std::string registerStr;
+    uint8_t statusRegister;
+
+    int previousBottomX = 0;
+    int previousBottomY = 0;
+    int statusRegisterY = 0;
 
     const uint32_t interval = 500; // ms
     uint32_t lastTime = SDL_GetTicks();
@@ -71,13 +80,14 @@ int main(int argc, char* argv[])
             lastTime = currentTime;
         }
 
-        drawHandler.drawFrame();
-
         memoryStr = nes.getMemory().getMemoryRegionStr(0x0000, 8 * 16);
-
-        std::cout << memoryStr << std::endl;
-
-        drawHandler.drawText(memoryStr, 10, 10);
+        registerStr = nes.getCpu().getRegisterStatusStr(statusRegister);
+        
+        drawHandler.drawFrame();
+        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(memoryStr, 10, 10);
+        statusRegisterY = previousBottomY;
+        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(registerStr, 10, previousBottomY + 10);
+        drawHandler.drawStatusRegister(statusRegister, 150, statusRegisterY + 10);
 
         SDL_RenderPresent(renderer);
     }
