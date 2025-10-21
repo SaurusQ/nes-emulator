@@ -13,6 +13,8 @@ class NES
         void reset();
         void runCycle();
 
+        const Memory& getMemory() const { return memory_; }
+
     private:
 
         Memory memory_;

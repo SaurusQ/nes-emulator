@@ -16,7 +16,8 @@ class Memory
         void fetch(uint16_t address, uint8_t& data) const;
         void store(uint16_t address, uint8_t data);
 
+        std::string getMemoryRegionStr(uint16_t address, size_t size) const;
+
     private:
         std::unique_ptr<uint8_t[]> memory_;
-
 };

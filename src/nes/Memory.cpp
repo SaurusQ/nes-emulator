@@ -3,6 +3,8 @@
 #include <memory>
 #include <cstring>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 
 constexpr size_t MEMORY_SIZE = 65536;
@@ -41,3 +43,19 @@ void Memory::store(uint16_t address, uint8_t data)
     memory_[address] = data;
 }
 
+std::string Memory::getMemoryRegionStr(uint16_t address, size_t size) const
+{
+    std::ostringstream oss;
+    oss << std::hex << std::uppercase;
+    std::string start = "";
+    for (size_t i = 0; i < size && address + i < MEMORY_SIZE; i++)
+    {
+        if (i % 8 == 0)
+        {
+            oss << start << "$" << std::setw(4) << std::setfill('0') << address + i;
+            start = "\n";
+        }
+        oss << " " << std::setw(2) << std::setfill('0') << static_cast<int>(memory_[address + i]);
+    }
+    return oss.str();
+}

@@ -55,6 +55,8 @@ int main(int argc, char* argv[])
     NES nes;
     nes.powerOn();
 
+    std::string memoryStr;
+
     const uint32_t interval = 500; // ms
     uint32_t lastTime = SDL_GetTicks();
 
@@ -70,7 +72,12 @@ int main(int argc, char* argv[])
         }
 
         drawHandler.drawFrame();
-        drawHandler.drawText("NES Emulator Running...", 10, 10);
+
+        memoryStr = nes.getMemory().getMemoryRegionStr(0x0000, 8 * 16);
+
+        std::cout << memoryStr << std::endl;
+
+        drawHandler.drawText(memoryStr, 10, 10);
 
         SDL_RenderPresent(renderer);
     }
