@@ -35,6 +35,7 @@ struct Registers
 
 class CPU
 {
+    friend class Instruction;
     friend class ADC;
     public:
         CPU(Memory& memory);

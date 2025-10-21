@@ -8,6 +8,10 @@
 #include <bitset>
 #include <sstream>
 
+constexpr uint16_t combineLittleEndian(uint8_t lowByte, uint8_t highByte) noexcept {
+    return static_cast<uint16_t>(lowByte) | (static_cast<uint16_t>(highByte) << 8);
+}
+
 CPU::CPU(Memory& memory)
     : memory_(memory)
 {
@@ -40,17 +44,17 @@ void CPU::clockTick()
     
     uint8_t opcode = 0x00;
     memory_.fetch(registers_.PC, opcode);
-    registers_.PC++;
 
     auto it = opcodeMap.find(opcode);
     if (it == opcodeMap.end()) {
         //std::cerr << "Unknown opcode: " << std::hex << int(opcode) << "\n";
+        registers_.PC++; // Increment PC if the opcode is unknown
         cycle_++;
         return;
     }
 
     currentInstruction_ = it->second.get();
-    currentInstruction_->execute(*this);
+    currentInstruction_->execute(this);
     cycle_++;
 }
 
@@ -77,16 +81,14 @@ bool CPU::readData(AddressingMode am, uint16_t& targetAddress, uint8_t& value, b
             value = registers_.A;
             return false;
         case IMMEDIATE:
-            memory_.fetch(registers_.PC, byte);
+            memory_.fetch(registers_.PC, value);
             registers_.PC++;
-            value = byte;
             return false;
         case ZERO_PAGE:
             memory_.fetch(registers_.PC, byte);
             registers_.PC++;
             targetAddress = static_cast<uint16_t>(byte);
             memory_.fetch(targetAddress, value);
-            registers_.PC++;
             return true;
         case ZERO_PAGE_X:
             memory_.fetch(registers_.PC, byte);
@@ -94,7 +96,6 @@ bool CPU::readData(AddressingMode am, uint16_t& targetAddress, uint8_t& value, b
             byte += registers_.X; // Overflow expected
             targetAddress = static_cast<uint16_t>(byte);
             memory_.fetch(targetAddress, value);
-            registers_.PC++;
             return true;
         case ZERO_PAGE_Y:
             memory_.fetch(registers_.PC, byte);
@@ -102,18 +103,61 @@ bool CPU::readData(AddressingMode am, uint16_t& targetAddress, uint8_t& value, b
             byte += registers_.Y; // Overflow expected
             targetAddress = static_cast<uint16_t>(byte);
             memory_.fetch(targetAddress, value);
-            registers_.PC++;
             return true;
         case RELATIVE: // Branch instructions
+            memory_.fetch(registers_.PC, value);
+            registers_.PC++;
             return false;
         case ABSOLUTE:
             memory_.fetch(registers_.PC, lowByte);
             registers_.PC++;
             memory_.fetch(registers_.PC, highByte);
             registers_.PC++;
-            targetAddress = static_cast<uint16_t>(lowByte) | (static_cast<uint16_t>(highByte) << 8);
+            targetAddress = combineLittleEndian(lowByte, highByte);
             memory_.fetch(targetAddress, value);
+            return true;
+        case ABSOLUTE_X:
+            memory_.fetch(registers_.PC, lowByte);
             registers_.PC++;
+            memory_.fetch(registers_.PC, highByte);
+            registers_.PC++;
+            targetAddress = combineLittleEndian(lowByte, highByte);
+            memory_.fetch(targetAddress + registers_.X, value);
+            return true;
+        case ABSOLUTE_Y:
+            memory_.fetch(registers_.PC, lowByte);
+            registers_.PC++;
+            memory_.fetch(registers_.PC, highByte);
+            registers_.PC++;
+            targetAddress = combineLittleEndian(lowByte, highByte);;
+            memory_.fetch(targetAddress + registers_.Y, value);
+            return true;
+        case INDIRECT:
+            memory_.fetch(registers_.PC, lowByte);
+            registers_.PC++;
+            memory_.fetch(registers_.PC, highByte);
+            registers_.PC++;
+            targetAddress = combineLittleEndian(lowByte, highByte);
+            registers_.PC = targetAddress;
+            return false;
+        case INDIRECT_X:
+            memory_.fetch(registers_.PC, byte);
+            registers_.PC++;
+            byte += registers_.Y; // Overflow expected
+            targetAddress = static_cast<uint16_t>(byte);
+            memory_.fetch(targetAddress,     lowByte);
+            memory_.fetch(targetAddress + 1, highByte);
+            targetAddress = combineLittleEndian(lowByte, highByte);
+            memory_.fetch(targetAddress, value);
+            return true;
+        case INDIRECT_Y:
+            memory_.fetch(registers_.PC, byte);
+            registers_.PC++;
+            targetAddress = static_cast<uint16_t>(byte);
+            memory_.fetch(targetAddress,     lowByte);
+            memory_.fetch(targetAddress + 1, highByte);
+            targetAddress = combineLittleEndian(lowByte, highByte) + registers_.Y;
+            memory_.fetch(targetAddress, value);
             return true;
         default:
             std::cerr << "Addressing mode not implemented!" << std::endl;

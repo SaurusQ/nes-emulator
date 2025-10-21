@@ -18,9 +18,9 @@ Instruction::~Instruction()
 
 }
 
-void ADC::operation(CPU& cpu, uint8_t mem) const
+void ADC::operation(CPU* cpu, uint8_t mem) const
 {
-    cpu.registers_.A += mem + cpu.registers_.P.C;
+    cpu->registers_.A += mem + cpu->registers_.P.C;
 }
 
 std::string ADC::getStr() const
