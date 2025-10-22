@@ -32,7 +32,7 @@ void DrawHandler::drawFrame()
     //SDL_RenderRect(renderer_, &outline);
 }
 
-std::pair<int , int> DrawHandler::drawText(std::string text, int x, int y)
+std::pair<int , int> DrawHandler::drawText(std::string text, int x, int y, bool highlightFirst)
 { // TODO only rerender texture that changes, highlight changes possibly, find changed texture by caching and coordinates
     std::istringstream stream(text);
     std::string line;
@@ -58,6 +58,11 @@ std::pair<int , int> DrawHandler::drawText(std::string text, int x, int y)
             SDL_Log("Failed to create texture from surface: %s", SDL_GetError());
             SDL_DestroySurface(surface);
             continue;
+        }
+
+        if (highlightFirst && yOffset == 0)
+        {
+            SDL_SetTextureColorMod(texture, highlightColor_.r, highlightColor_.g, highlightColor_.b);
         }
 
         SDL_FRect dst = { float(x), float(y) + yOffset, float(surface->w), float(surface->h) };

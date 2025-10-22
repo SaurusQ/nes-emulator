@@ -42,7 +42,7 @@ class CPU
         ~CPU();
         void resetRegisters();
         void clockTick();
-        bool readData(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool& pageCrossed);
+        bool fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool& pageCrossed);
 
         void printStatus() const;
 
@@ -51,7 +51,7 @@ class CPU
         uint64_t    getCurrentCycle() const { return cycle_; }
         std::string getCurrentCycleStr() const { return "Cycles: " + std::to_string(cycle_); }
         const Instruction* getCurrentInstruction() const { return currentInstruction_; }
-
+        uint16_t getCurrentAddress() const { return registers_.PC; }
     private:
         std::string getRegisterStatusStr(bool renderVersion) const;
 

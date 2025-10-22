@@ -33,7 +33,7 @@ void Memory::loadData(uint16_t startAddress, const uint8_t* data, size_t size)
     std::memcpy(memory_.get() + startAddress, data, size);
 }
 
-void Memory::fetch(uint16_t address, uint8_t& data) const
+void Memory::read(uint16_t address, uint8_t& data) const
 {
     data = memory_[address];
 }

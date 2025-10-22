@@ -59,11 +59,12 @@ int main(int argc, char* argv[])
     NES nes;
     nes.powerOn();
 
-    constexpr int statusPanelX = 110;
+    constexpr int statusPanelX = 10;
     constexpr int statusPanelY =  10;
 
     std::string memoryStr;
     std::string registerStr;
+    std::string instructionStr;
     uint8_t statusRegister;
 
     int previousBottomX = 0;
@@ -74,8 +75,6 @@ int main(int argc, char* argv[])
     uint32_t lastTime = SDL_GetTicks();
 
     while (!done) {
-        SDL_Event event;
-
         done = EventHandler::sdlPollEvent();
 
         uint32_t currentTime = SDL_GetTicks();
@@ -86,7 +85,7 @@ int main(int argc, char* argv[])
 
         memoryStr = nes.getMemory().getMemoryRegionStr(0x0000, 8 * 16);
         registerStr = nes.getCpu().getRegisterStatusStr(statusRegister);
-
+        instructionStr = Instruction::getInstructionListString(nes.getCpu().getCurrentAddress(), nes.getMemory(), 3);
         
 
         drawHandler.drawFrame();
@@ -97,12 +96,7 @@ int main(int argc, char* argv[])
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(registerStr, statusPanelX, previousBottomY + 20);
         drawHandler.drawStatusRegister(statusRegister, statusPanelX + 150, statusRegisterY + 20);
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(nes.getCpu().getCurrentCycleStr(), statusPanelX, previousBottomY + 10);
-        
-        auto instruction = nes.getCpu().getCurrentInstruction();
-        if (instruction != nullptr)
-        {
-            std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(instruction->getStr(), statusPanelX, previousBottomY + 20);
-        }
+        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(instructionStr, statusPanelX, previousBottomY + 20, true);
 
         SDL_RenderPresent(renderer);
     }
