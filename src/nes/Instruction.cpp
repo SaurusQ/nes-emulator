@@ -41,7 +41,7 @@ std::string Instruction::getInstructionListString(uint16_t address, const Memory
 
         auto it = opcodeMap.find(opcode);
         if (it == opcodeMap.end()) {
-            oss << "XXX\n";
+            oss << "$" << std::setw(4) << std::setfill('0') << address << " XXX\n";
             address++;
             continue;
         }
