@@ -85,7 +85,10 @@ int main(int argc, char* argv[])
 
         memoryStr = nes.getMemory().getMemoryRegionStr(0x0000, 8 * 16);
         registerStr = nes.getCpu().getRegisterStatusStr(statusRegister);
-        instructionStr = Instruction::getInstructionListString(nes.getCpu().getCurrentAddress(), nes.getMemory(), 3);
+        if (nes.getCpu().nextInstruction())
+        {
+            instructionStr = Instruction::getInstructionListString(nes.getCpu().getCurrentAddress(), nes.getMemory(), 3);
+        }
         
 
         drawHandler.drawFrame();

@@ -52,11 +52,13 @@ class CPU
         std::string getCurrentCycleStr() const { return "Cycles: " + std::to_string(cycle_); }
         const Instruction* getCurrentInstruction() const { return currentInstruction_; }
         uint16_t getCurrentAddress() const { return registers_.PC; }
+        bool nextInstruction() const { return insCyclesToExecute_ == 0; }
     private:
         std::string getRegisterStatusStr(bool renderVersion) const;
 
         Registers registers_;
         Memory& memory_;
         uint64_t cycle_ = 0;
+        uint64_t insCyclesToExecute_ = 0;
         const Instruction* currentInstruction_ = nullptr;
 };

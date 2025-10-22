@@ -36,7 +36,12 @@ CPU::~CPU()
 
 void CPU::clockTick()
 {
-    // TODO delay based on how many cycles the instruction takes
+    if (insCyclesToExecute_ > 0)
+    {
+        cycle_++;
+        insCyclesToExecute_--;
+        return;
+    }
     
     uint8_t opcode = 0x00;
     memory_.read(registers_.PC, opcode);
@@ -50,8 +55,11 @@ void CPU::clockTick()
     }
 
     currentInstruction_ = it->second.get();
-    currentInstruction_->execute(this);
+
+    insCyclesToExecute_ = currentInstruction_->execute(this);
+    
     cycle_++;
+    insCyclesToExecute_--;
 }
 
 void CPU::resetRegisters()
