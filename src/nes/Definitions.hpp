@@ -5,6 +5,7 @@
 enum AddressingMode
 {
     IMPLICIT,
+    IMPLICIT_SKIP, // Instrucitons that skip the next byte
     ACCUMULATOR,
     IMMEDIATE,
     ZERO_PAGE,
@@ -35,5 +36,23 @@ enum InstructionType
     BMI,
     BNE,
     BPL,
+    BRK,
+    BVC,
+    BVS,
+    CLC,
+    CLD,
+    CLI,
+    CLV,
+    CMP,
+    CPX,
+    CPY,
+    DEC,
+    DEX,
+    DEY,
+    EOR,
+    INC,
+    INX,
+    INY,
+    JMP,
     NOP
 };

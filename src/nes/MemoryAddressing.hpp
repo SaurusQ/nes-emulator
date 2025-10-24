@@ -18,6 +18,11 @@ struct MemoryAddressing
         {
             case IMPLICIT:
                 return false;
+            
+            case IMPLICIT_SKIP:
+                // Implicit addresses are considered to have 2-byte size
+                cpu.registers_.PC++;
+                return false;
 
             case ACCUMULATOR:
                 pageCrossed = false;
@@ -83,11 +88,20 @@ struct MemoryAddressing
                 targetAddress = 0xFF & (make16(low, high) + cpu.registers_.Y);
                 cpu.memory_.read(targetAddress, value);
                 return true;
-            case INDIRECT:
+
+            case INDIRECT: // Only JMP supports
                 cpu.memory_.read(cpu.registers_.PC, low);
-                cpu.registers_.PC++;
-                cpu.memory_.read(cpu.registers_.PC, high);
-                cpu.registers_.PC++;
+                if ((0xFF & cpu.registers_.PC) == 0xFF)
+                { // JMP CPU bug, fails when crossing a page, JMP ($03FF) reads $03FF and $0300 instead of $0400
+                    cpu.memory_.read((cpu.registers_.PC & 0xFF00), high);
+                    cpu.registers_.PC += 2;
+                }
+                else
+                {
+                    cpu.registers_.PC++;
+                    cpu.memory_.read(cpu.registers_.PC, high);
+                    cpu.registers_.PC++;
+                }
                 targetAddress = make16(low, high);
                 cpu.registers_.PC = targetAddress;
                 return false;

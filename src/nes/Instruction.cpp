@@ -44,6 +44,7 @@ std::string InstructionHelper::getStr(const InstructionInfo& info, uint8_t* memo
     switch (info.mode)
     {
         case AddressingMode::IMPLICIT:
+        case AddressingMode::IMPLICIT_SKIP:
             oss << " {IMP}";
             break;
         case AddressingMode::ACCUMULATOR:

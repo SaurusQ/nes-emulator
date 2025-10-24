@@ -118,15 +118,126 @@ struct Operation
                     }
                     return false;
                 }
+            case BRK:
+                {
+                    // TODO
+                    return false;
+                }
+            case BVC:
+                {
+                    if (!cpu.registers_.P.V)
+                    {
+                        cpu.registers_.PC += static_cast<int8_t>(mem);
+                        return true;
+                    }
+                    return false;
+                }
+            case BVS:
+                {
+                    if (cpu.registers_.P.V)
+                    {
+                        cpu.registers_.PC += static_cast<int8_t>(mem);
+                        return true;
+                    }
+                    return false;
+                }
+            case CLC:
+                {
+                    cpu.registers_.P.C = 0x00;
+                    return false;
+                }
+            case CLD:
+                {
+                    cpu.registers_.P.D = 0x00;
+                    return false;
+                }
+            case CLI:
+                {
+                    cpu.registers_.P.I = 0x00;
+                    return false;
+                }
+            case CLV:
+                {
+                    cpu.registers_.P.V = 0x00;
+                    return false;
+                }
+            case CMP:
+                {
+                    uint8_t result = cpu.registers_.A - mem;
+                    cpu.registers_.P.C = cpu.registers_.A >= mem;
+                    setZN(cpu.registers_.P, result);
+                    return false;
+                }
+            case CPX:
+                {
+                    uint8_t result = cpu.registers_.X - mem;
+                    cpu.registers_.P.C = cpu.registers_.X >= mem;
+                    setZN(cpu.registers_.P, result);
+                    return false;
+                }
+            case CPY:
+                {
+                    uint8_t result = cpu.registers_.Y - mem;
+                    cpu.registers_.P.C = cpu.registers_.Y >= mem;
+                    setZN(cpu.registers_.P, result);
+                    return false;
+                }
+            case DEC:
+                {
+                    mem -= 1;
+                    cpu.memory_.store(targetAddress, mem);
+                    setZN(cpu.registers_.P, mem);
+                    return false;
+                }
+            case DEX:
+                {
+                    cpu.registers_.X -= 1;
+                    setZN(cpu.registers_.P, cpu.registers_.X);
+                    return false;
+                }
+            case DEY:
+                {
+                    cpu.registers_.Y -= 1;
+                    setZN(cpu.registers_.P, cpu.registers_.Y);
+                    return false;
+                }
             case NOP:
                 {
                     // Do nothing
                     return false;
                 }
-    
+            case EOR:
+                {
+                    cpu.registers_.A ^= mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            case INC:
+                {
+                    mem += 1;
+                    cpu.memory_.store(targetAddress, mem);
+                    setZN(cpu.registers_.P, mem);
+                    return false;
+                }
+            case INX:
+                {
+                    cpu.registers_.X += 1;
+                    setZN(cpu.registers_.P, cpu.registers_.X);
+                    return false;
+                }
+            case INY:
+                {
+                    cpu.registers_.Y += 1;
+                    setZN(cpu.registers_.P, cpu.registers_.Y);
+                    return false;
+                }
+            case JMP:
+                { // TODO it reads the next byte from the targetaddress, not correct of JMP
+                    cpu.registers_.PC = targetAddress;
+                    return false;
+                }
             default:
                 throw std::runtime_error("Operation not implemented");
-                break;
         }
     }
 };
