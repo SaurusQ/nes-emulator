@@ -109,6 +109,102 @@ const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0x4C] = {Instruction<JMP, ABSOLUTE>::execute,     3};
         t[0x6C] = {Instruction<JMP, INDIRECT>::execute,     5};
 
+        t[0x20] = {Instruction<JSR, ABSOLUTE>::execute,     6};
+
+        t[0xA9] = {Instruction<LDA, IMMEDIATE>::execute,    2};
+        t[0xA5] = {Instruction<LDA, ZERO_PAGE>::execute,    3};
+        t[0xB5] = {Instruction<LDA, ZERO_PAGE_X>::execute,  4};
+        t[0xAD] = {Instruction<LDA, ABSOLUTE>::execute,     4};
+        t[0xBD] = {Instruction<LDA, ABSOLUTE_X>::execute,   4, 5};
+        t[0xB9] = {Instruction<LDA, ABSOLUTE_Y>::execute,   4, 5};
+        t[0xA1] = {Instruction<LDA, INDIRECT_X>::execute,   6};
+        t[0xB1] = {Instruction<LDA, INDIRECT_Y>::execute,   5, 6};
+
+        t[0xA2] = {Instruction<LDX, IMMEDIATE>::execute,    2};
+        t[0xA6] = {Instruction<LDX, ZERO_PAGE>::execute,    3};
+        t[0xB6] = {Instruction<LDX, ZERO_PAGE_Y>::execute,  4};
+        t[0xAE] = {Instruction<LDX, ABSOLUTE>::execute,     4};
+        t[0xBE] = {Instruction<LDX, ABSOLUTE_Y>::execute,   4, 5};
+
+        t[0xA0] = {Instruction<LDY, IMMEDIATE>::execute,    2};
+        t[0xA4] = {Instruction<LDY, ZERO_PAGE>::execute,    3};
+        t[0xB4] = {Instruction<LDY, ZERO_PAGE_X>::execute,  4};
+        t[0xAC] = {Instruction<LDY, ABSOLUTE>::execute,     4};
+        t[0xBC] = {Instruction<LDY, ABSOLUTE_X>::execute,   4, 5};
+
+        t[0x4A] = {Instruction<LSR, ACCUMULATOR>::execute,  2};
+        t[0x46] = {Instruction<LSR, ZERO_PAGE>::execute,    5};
+        t[0x56] = {Instruction<LSR, ZERO_PAGE_X>::execute,  6};
+        t[0x4E] = {Instruction<LSR, ABSOLUTE>::execute,     6};
+        t[0x5E] = {Instruction<LSR, ABSOLUTE_X>::execute,   7};
+
+        t[0xEA] = {Instruction<NOP, IMPLICIT>::execute,     2};
+
+        t[0x09] = {Instruction<ORA, IMMEDIATE>::execute,    2};
+        t[0x05] = {Instruction<ORA, ZERO_PAGE>::execute,    3};
+        t[0x15] = {Instruction<ORA, ZERO_PAGE_X>::execute,  4};
+        t[0x0D] = {Instruction<ORA, ABSOLUTE>::execute,     4};
+        t[0x1D] = {Instruction<ORA, ABSOLUTE_X>::execute,   4, 5};
+        t[0x19] = {Instruction<ORA, ABSOLUTE_Y>::execute,   4, 5};
+        t[0x01] = {Instruction<ORA, INDIRECT_X>::execute,   6};
+        t[0x11] = {Instruction<ORA, INDIRECT_Y>::execute,   5, 6};
+
+        t[0x48] = {Instruction<PHA, IMPLICIT>::execute,     3};
+        t[0x08] = {Instruction<PHP, IMPLICIT>::execute,     3};
+        t[0x68] = {Instruction<PLA, IMPLICIT>::execute,     4};
+        t[0x28] = {Instruction<PLP, IMPLICIT>::execute,     4};
+
+        t[0x2A] = {Instruction<ROL, ACCUMULATOR>::execute,  2};
+        t[0x26] = {Instruction<ROL, ZERO_PAGE>::execute,    5};
+        t[0x36] = {Instruction<ROL, ZERO_PAGE_X>::execute,  6};
+        t[0x2E] = {Instruction<ROL, ABSOLUTE>::execute,     6};
+        t[0x3E] = {Instruction<ROL, ABSOLUTE_X>::execute,   7};
+
+        t[0x6A] = {Instruction<ROR, ACCUMULATOR>::execute,  2};
+        t[0x66] = {Instruction<ROR, ZERO_PAGE>::execute,    5};
+        t[0x76] = {Instruction<ROR, ZERO_PAGE_X>::execute,  6};
+        t[0x6E] = {Instruction<ROR, ABSOLUTE>::execute,     6};
+        t[0x7E] = {Instruction<ROR, ABSOLUTE_X>::execute,   7};
+        
+        t[0x40] = {Instruction<RTI, IMPLICIT>::execute,     6};
+        t[0x60] = {Instruction<RTS, IMPLICIT>::execute,     6};
+        
+        t[0xE9] = {Instruction<SBC, IMMEDIATE>::execute,    2};
+        t[0xE5] = {Instruction<SBC, ZERO_PAGE>::execute,    3};
+        t[0xF5] = {Instruction<SBC, ZERO_PAGE_X>::execute,  4};
+        t[0xED] = {Instruction<SBC, ABSOLUTE>::execute,     4};
+        t[0xFD] = {Instruction<SBC, ABSOLUTE_X>::execute,   4, 5};
+        t[0xF9] = {Instruction<SBC, ABSOLUTE_Y>::execute,   4, 5};
+        t[0xE1] = {Instruction<SBC, INDIRECT_X>::execute,   6};
+        t[0xF1] = {Instruction<SBC, INDIRECT_Y>::execute,   5, 6};
+        
+        t[0x38] = {Instruction<SEC, IMPLICIT>::execute,     2};
+        t[0xF8] = {Instruction<SED, IMPLICIT>::execute,     2};
+        t[0x78] = {Instruction<SEI, IMPLICIT>::execute,     2};
+
+        t[0x85] = {Instruction<STA, ZERO_PAGE>::execute,    3};
+        t[0x95] = {Instruction<STA, ZERO_PAGE_X>::execute,  4};
+        t[0x8D] = {Instruction<STA, ABSOLUTE>::execute,     4};
+        t[0x9D] = {Instruction<STA, ABSOLUTE_X>::execute,   5};
+        t[0x99] = {Instruction<STA, ABSOLUTE_Y>::execute,   5};
+        t[0x81] = {Instruction<STA, INDIRECT_X>::execute,   6};
+        t[0x91] = {Instruction<STA, INDIRECT_Y>::execute,   6};
+
+        t[0x86] = {Instruction<STX, ZERO_PAGE>::execute,    3};
+        t[0x96] = {Instruction<STX, ZERO_PAGE_Y>::execute,  4};
+        t[0x8E] = {Instruction<STX, ABSOLUTE>::execute,     4};
+
+        t[0x84] = {Instruction<STY, ZERO_PAGE>::execute,    3};
+        t[0x94] = {Instruction<STY, ZERO_PAGE_X>::execute,  4};
+        t[0x8C] = {Instruction<STY, ABSOLUTE>::execute,     4};
+
+        t[0xAA] = {Instruction<TAX, IMPLICIT>::execute,     2};
+        t[0xA8] = {Instruction<TAY, IMPLICIT>::execute,     2};
+        t[0xBA] = {Instruction<TSX, IMPLICIT>::execute,     2};
+        t[0x8A] = {Instruction<TXA, IMPLICIT>::execute,     2};
+        t[0x9A] = {Instruction<TXS, IMPLICIT>::execute,     2};
+        t[0x98] = {Instruction<TYA, IMPLICIT>::execute,     2};
+
         return t;
     }();
 
@@ -215,6 +311,102 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
 
         t[0x4C] = {"JMP", ABSOLUTE,     3};
         t[0x6C] = {"JMP", INDIRECT,     3};
+
+        t[0x20] = {"JSR", ABSOLUTE,     3};
+
+        t[0xA9] = {"LDA", IMMEDIATE,    2};
+        t[0xA5] = {"LDA", ZERO_PAGE,    2};
+        t[0xB5] = {"LDA", ZERO_PAGE_X,  2};
+        t[0xAD] = {"LDA", ABSOLUTE,     3};
+        t[0xBD] = {"LDA", ABSOLUTE_X,   3};
+        t[0xB9] = {"LDA", ABSOLUTE_Y,   3};
+        t[0xA1] = {"LDA", INDIRECT_X,   2};
+        t[0xB1] = {"LDA", INDIRECT_Y,   2};
+
+        t[0xA2] = {"LDX", IMMEDIATE,    2};
+        t[0xA6] = {"LDX", ZERO_PAGE,    2};
+        t[0xB6] = {"LDX", ZERO_PAGE_Y,  2};
+        t[0xAE] = {"LDX", ABSOLUTE,     3};
+        t[0xBE] = {"LDX", ABSOLUTE_Y,   3};
+
+        t[0xA0] = {"LDY", IMMEDIATE,    2};
+        t[0xA4] = {"LDY", ZERO_PAGE,    2};
+        t[0xB4] = {"LDY", ZERO_PAGE_X,  2};
+        t[0xAC] = {"LDY", ABSOLUTE,     3};
+        t[0xBC] = {"LDY", ABSOLUTE_X,   3};
+
+        t[0x4A] = {"LSR", ACCUMULATOR,  1};
+        t[0x46] = {"LSR", ZERO_PAGE,    2};
+        t[0x56] = {"LSR", ZERO_PAGE_X,  2};
+        t[0x4E] = {"LSR", ABSOLUTE,     3};
+        t[0x5E] = {"LSR", ABSOLUTE_X,   3};
+
+        t[0xEA] = {"NOP", IMPLICIT,     1};
+
+        t[0x09] = {"ORA", IMMEDIATE,    2};
+        t[0x05] = {"ORA", ZERO_PAGE,    2};
+        t[0x15] = {"ORA", ZERO_PAGE_X,  2};
+        t[0x0D] = {"ORA", ABSOLUTE,     3};
+        t[0x1D] = {"ORA", ABSOLUTE_X,   3};
+        t[0x19] = {"ORA", ABSOLUTE_Y,   3};
+        t[0x01] = {"ORA", INDIRECT_X,   2};
+        t[0x11] = {"ORA", INDIRECT_Y,   2};
+
+        t[0x48] = {"PHA", IMPLICIT,     1};
+        t[0x08] = {"PHP", IMPLICIT,     1};
+        t[0x68] = {"PLA", IMPLICIT,     1};
+        t[0x28] = {"PLP", IMPLICIT,     1};
+
+        t[0x2A] = {"ROL", ACCUMULATOR,  1};
+        t[0x26] = {"ROL", ZERO_PAGE,    2};
+        t[0x36] = {"ROL", ZERO_PAGE_X,  2};
+        t[0x2E] = {"ROL", ABSOLUTE,     3};
+        t[0x3E] = {"ROL", ABSOLUTE_X,   3};
+
+        t[0x6A] = {"ROR", ACCUMULATOR,  1};
+        t[0x66] = {"ROR", ZERO_PAGE,    2};
+        t[0x76] = {"ROR", ZERO_PAGE_X,  2};
+        t[0x6E] = {"ROR", ABSOLUTE,     3}; 
+        t[0x7E] = {"ROR", ABSOLUTE_X,   3};
+
+        t[0x40] = {"RTI", IMPLICIT,     1};
+        t[0x60] = {"RTS", IMPLICIT,     1};
+
+        t[0xE9] = {"SBC", IMMEDIATE,    2};
+        t[0xE5] = {"SBC", ZERO_PAGE,    2};
+        t[0xF5] = {"SBC", ZERO_PAGE_X,  2};
+        t[0xED] = {"SBC", ABSOLUTE,     3};
+        t[0xFD] = {"SBC", ABSOLUTE_X,   3};
+        t[0xF9] = {"SBC", ABSOLUTE_Y,   3};
+        t[0xE1] = {"SBC", INDIRECT_X,   2};
+        t[0xF1] = {"SBC", INDIRECT_Y,   2};
+
+        t[0x38] = {"SEC", IMPLICIT,     1};
+        t[0xF8] = {"SED", IMPLICIT,     1};
+        t[0x78] = {"SEI", IMPLICIT,     1};
+
+        t[0x85] = {"STA", ZERO_PAGE,    2};
+        t[0x95] = {"STA", ZERO_PAGE_X,  2};
+        t[0x8D] = {"STA", ABSOLUTE,     3};
+        t[0x9D] = {"STA", ABSOLUTE_X,   3};
+        t[0x99] = {"STA", ABSOLUTE_Y,   3};
+        t[0x81] = {"STA", INDIRECT_X,   2};
+        t[0x91] = {"STA", INDIRECT_Y,   2};
+
+        t[0x86] = {"STX", ZERO_PAGE,    2};
+        t[0x96] = {"STX", ZERO_PAGE_Y,  2};
+        t[0x8E] = {"STX", ABSOLUTE,     3};
+
+        t[0x84] = {"STY", ZERO_PAGE,    2};
+        t[0x94] = {"STY", ZERO_PAGE_X,  2};
+        t[0x8C] = {"STY", ABSOLUTE,     3};
+
+        t[0xAA] = {"TAX", IMPLICIT,     1};
+        t[0xA8] = {"TAY", IMPLICIT,     1};
+        t[0xBA] = {"TSX", IMPLICIT,     1};
+        t[0x8A] = {"TXA", IMPLICIT,     1};
+        t[0x9A] = {"TXS", IMPLICIT,     1};
+        t[0x98] = {"TYA", IMPLICIT,     1};
 
         return t;
     }();

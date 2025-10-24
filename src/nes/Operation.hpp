@@ -27,14 +27,12 @@ struct Operation
                     setZN(cpu.registers_.P, cpu.registers_.A);
                     return false;
                 }
-            
             case AND:
                 {
                     cpu.registers_.A &= mem;
                     setZN(cpu.registers_.P, cpu.registers_.A);
                     return false;
                 }
-    
             case ASL:
                 {
                     cpu.registers_.P.C = mem & 0x80;
@@ -50,7 +48,6 @@ struct Operation
                     }
                     return false;
                 }
-    
             case BCC:
                 {
                     if (!cpu.registers_.P.C)
@@ -60,7 +57,6 @@ struct Operation
                     }
                     return false;
                 }
-
             case BCS:
                 {
                     if (cpu.registers_.P.C)
@@ -70,7 +66,6 @@ struct Operation
                     }
                     return false;
                 }
-
             case BEQ:
                 {
                     if (cpu.registers_.P.Z)
@@ -80,7 +75,6 @@ struct Operation
                     }
                     return false;
                 }
-
             case BIT:
                 {
                     if (cpu.registers_.A & mem)
@@ -201,11 +195,6 @@ struct Operation
                     setZN(cpu.registers_.P, cpu.registers_.Y);
                     return false;
                 }
-            case NOP:
-                {
-                    // Do nothing
-                    return false;
-                }
             case EOR:
                 {
                     cpu.registers_.A ^= mem;
@@ -234,6 +223,176 @@ struct Operation
             case JMP:
                 { // TODO it reads the next byte from the targetaddress, not correct of JMP
                     cpu.registers_.PC = targetAddress;
+                    return false;
+                }
+            case JSR:
+                {
+                    // TODO
+                    return false;
+                }
+            case LDA:
+                {
+                    cpu.registers_.A = mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            case LDX:
+                {
+                    cpu.registers_.X = mem;
+                    setZN(cpu.registers_.P, cpu.registers_.X);
+                    return false;
+                }
+            case LDY:
+                {
+                    cpu.registers_.Y = mem;
+                    setZN(cpu.registers_.P, cpu.registers_.Y);
+                    return false;
+                }
+            case NOP:
+                {
+                    // Do nothing
+                    return false;
+                }
+            case ORA:
+                {
+                    cpu.registers_.A |= mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            case PHA:
+                {
+                    // TODO
+                    return false;
+                }
+            case PHP:
+                {
+                    // TODO
+                    return false;
+                }
+            case PLA:
+                {
+                    // TODO
+                    return false;
+                }
+            case PLP:
+                {
+                    // TODO
+                    return false;
+                }
+            case ROL:
+                {
+                    cpu.registers_.P.C = mem & 0x80;
+                    mem <<= 1;
+                    setZN(cpu.registers_.P, mem);
+                    if (AM == ACCUMULATOR)
+                    {
+                        cpu.registers_.A = mem;
+                    }
+                    else
+                    {
+                        cpu.memory_.store(targetAddress, mem);
+                    }
+                    return false;
+                }
+            case ROR:
+                {
+                    cpu.registers_.P.C = mem & 0x01;
+                    mem >>= 1;
+                    setZN(cpu.registers_.P, mem);
+                    if (AM == ACCUMULATOR)
+                    {
+                        cpu.registers_.A = mem;
+                    }
+                    else
+                    {
+                        cpu.memory_.store(targetAddress, mem);
+                    }
+                    return false;
+                }
+            case RTI:
+                {
+                    // TODO
+                    return false;
+                }
+            case RTS:
+                {
+                    // TODO
+                    return false;
+                }
+            case SBC:
+                {
+                    uint8_t A = cpu.registers_.A;
+                    uint8_t subs = mem + !cpu.registers_.P.C;
+                    cpu.registers_.P.C = (mem == 0xFF && !cpu.registers_.P.C) // Overflowed on the first phase
+                        | __builtin_sub_overflow(cpu.registers_.A, subs, &cpu.registers_.A);
+
+                    cpu.registers_.P.V = ((cpu.registers_.A ^ A) & (cpu.registers_.A ^ ~mem) & 0x80);
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            case SEC:
+                {
+                    cpu.registers_.P.C = 0x01;
+                    return false;
+                }
+            case SED:
+                {
+                    cpu.registers_.P.D = 0x01;
+                    return false;
+                }
+            case SEI:
+                {
+                    cpu.registers_.P.I = 0x01;
+                    return false;
+                }
+            case STA:
+                {
+                    cpu.memory_.store(targetAddress, cpu.registers_.A);
+                    return false;
+                }
+            case STX:
+                {
+                    cpu.memory_.store(targetAddress, cpu.registers_.X);
+                    return false;
+                }
+            case STY:
+                {
+                    cpu.memory_.store(targetAddress, cpu.registers_.Y);
+                    return false;
+                }
+            case TAX:
+                {
+                    cpu.registers_.X = cpu.registers_.A;
+                    setZN(cpu.registers_.P, cpu.registers_.X);
+                    return false;
+                }
+            case TAY:
+                {
+                    cpu.registers_.Y = cpu.registers_.A;
+                    setZN(cpu.registers_.P, cpu.registers_.Y);
+                    return false;
+                }
+            case TSX:
+                {
+                    cpu.registers_.X = cpu.registers_.SP;
+                    setZN(cpu.registers_.P, cpu.registers_.X);
+                    return false;
+                }
+            case TXA:
+                {
+                    cpu.registers_.A = cpu.registers_.X;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            case TXS:
+                {
+                    cpu.registers_.SP = cpu.registers_.X;
+                    return false;
+                }
+            case TYA:
+                {
+                    cpu.registers_.A = cpu.registers_.Y;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
                     return false;
                 }
             default:
