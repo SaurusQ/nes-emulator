@@ -40,6 +40,19 @@ inline const std::array<InstructionData, 256>& getOpcodeTable() {
 
         t[0x90] = {Instruction<BCC, RELATIVE>::execute,     2, 4, 3};
 
+        t[0xB0] = {Instruction<BCS, RELATIVE>::execute,     2, 4, 3};
+
+        t[0xF0] = {Instruction<BEQ, RELATIVE>::execute,     2, 4, 3};
+
+        t[0x24] = {Instruction<BIT, ZERO_PAGE>::execute,    3};
+        t[0x2C] = {Instruction<BIT, ABSOLUTE>::execute,     4};
+
+        t[0x30] = {Instruction<BMI, RELATIVE>::execute,     2, 4, 3};
+
+        t[0xD0] = {Instruction<BNE, RELATIVE>::execute,     2, 4, 3};
+
+        t[0x10] = {Instruction<BPL, RELATIVE>::execute,     2, 4, 3};
+
         return t;
     }();
 
@@ -77,6 +90,19 @@ inline const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0x1E] = {"ASL", ABSOLUTE_X,   3};
 
         t[0x90] = {"BCC", RELATIVE,     2};
+
+        t[0xB0] = {"BCS", RELATIVE,     2};
+
+        t[0xF0] = {"BEQ", RELATIVE,     2};
+
+        t[0x24] = {"BIT", ZERO_PAGE,    2};
+        t[0x2C] = {"BIT", ABSOLUTE,     3};
+
+        t[0x30] = {"BMI", RELATIVE,     2};
+
+        t[0xD0] = {"BNE", RELATIVE,     2};
+
+        t[0x10] = {"BPL", RELATIVE,     2};
 
         return t;
     }();

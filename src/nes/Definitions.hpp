@@ -29,5 +29,11 @@ enum InstructionType
     AND,
     ASL,
     BCC,
+    BCS,
+    BEQ,
+    BIT,
+    BMI,
+    BNE,
+    BPL,
     NOP
 };

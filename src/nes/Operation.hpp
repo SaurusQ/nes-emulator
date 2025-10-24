@@ -61,6 +61,63 @@ struct Operation
                     return false;
                 }
 
+            case BCS:
+                {
+                    if (cpu.registers_.P.C)
+                    {
+                        cpu.registers_.PC += static_cast<int8_t>(mem);
+                        return true;
+                    }
+                    return false;
+                }
+
+            case BEQ:
+                {
+                    if (cpu.registers_.P.Z)
+                    {
+                        cpu.registers_.PC += static_cast<int8_t>(mem);
+                        return true;
+                    }
+                    return false;
+                }
+
+            case BIT:
+                {
+                    if (cpu.registers_.A & mem)
+                    {
+                        cpu.registers_.P.Z = cpu.registers_.A;
+                        cpu.registers_.P.V = 0x40 & mem;
+                        cpu.registers_.P.N = 0x80 & mem;
+                    }
+                    return false;
+                }
+            case BMI:
+                {
+                    if (cpu.registers_.P.N)
+                    {
+                        cpu.registers_.PC += static_cast<int8_t>(mem);
+                        return true;
+                    }
+                    return false;
+                }
+            case BNE:
+                {
+                    if (!cpu.registers_.P.Z)
+                    {
+                        cpu.registers_.PC += static_cast<int8_t>(mem);
+                        return true;
+                    }
+                    return false;
+                }
+            case BPL:
+                {
+                    if (!cpu.registers_.P.N)
+                    {
+                        cpu.registers_.PC += static_cast<int8_t>(mem);
+                        return true;
+                    }
+                    return false;
+                }
             case NOP:
                 {
                     // Do nothing
