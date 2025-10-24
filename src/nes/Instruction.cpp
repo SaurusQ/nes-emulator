@@ -6,19 +6,14 @@
 #include <iostream>
 #include <iomanip>
 
-Instruction::Instruction(uint8_t opcode, const char* name, AddressingMode mode, uint8_t bytes, uint8_t cycles)
-    : Instruction::Instruction(opcode, name, mode, bytes, cycles, cycles)
+Instruction::Instruction(uint8_t opcode, const char* name, OperationFunc operation, AddressingMode mode, uint8_t bytes, uint8_t cycles)
+    : Instruction::Instruction(opcode, name, operation, mode, bytes, cycles, cycles)
 {
 
 }
 
-Instruction::Instruction(uint8_t opcode, const char* name, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed)
-    : opcode_(opcode), name_(name),mode_(mode), bytes_(bytes), cycles_(cycles), cyclesPageCrossed_(cyclesPageCrossed)
-{
-
-}
-
-Instruction::~Instruction()
+Instruction::Instruction(uint8_t opcode, const char* name, OperationFunc operation, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed)
+    : opcode_(opcode), name_(name), operation_(operation), mode_(mode), bytes_(bytes), cycles_(cycles), cyclesPageCrossed_(cyclesPageCrossed)
 {
 
 }
@@ -39,26 +34,19 @@ std::string Instruction::getInstructionListString(uint16_t address, const Memory
         }
         uint8_t opcode = *(memoryPtr + address);
 
-        auto it = opcodeMap.find(opcode);
-        if (it == opcodeMap.end()) {
-            oss << "$" << std::setw(4) << std::setfill('0') << address << " XXX\n";
-            address++;
-            continue;
-        }
-        Instruction* instruction = it->second.get();
-        if (address + instruction->getLenght() > memory.size())
+        const Instruction& instruction = opcodeMap[opcode];
+        if (address + instruction.getLenght() > memory.size())
         {
             oss << "OVF";
             break;
         }
-        oss << "$" << std::setw(4) << std::setfill('0') << address << " " << instruction->getStr(memoryPtr + address) << "\n";
-        address += instruction->getLenght();
-
+        oss << "$" << std::setw(4) << std::setfill('0') << address << " " << instruction.getStr(memoryPtr + address) << "\n";
+        address += instruction.getLenght();
     }
     return oss.str();
 }
 
-std::string Instruction::getStr(uint8_t* memory)
+std::string Instruction::getStr(uint8_t* memory) const
 {
     std::ostringstream oss;
     oss << std::hex << std::uppercase << name_;
@@ -89,22 +77,22 @@ std::string Instruction::getStr(uint8_t* memory)
             oss << " $" << std::setw(2) << std::setfill('0') << +static_cast<int8_t>(*(memoryPtr)) << " {REL}";
             break;
         case AddressingMode::ABSOLUTE:
-            oss << " $" << std::setw(4) << std::setfill('0') << combineLittleEndian(*(memoryPtr), *(memoryPtr + 1)) << " {ABS}";
+            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << " {ABS}";
             break;
         case AddressingMode::ABSOLUTE_X:
-            oss << " $" << std::setw(4) << std::setfill('0') << combineLittleEndian(*(memoryPtr), *(memoryPtr + 1)) << ", X {ABX}";
+            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << ", X {ABX}";
             break;
         case AddressingMode::ABSOLUTE_Y:
-            oss << " $" << std::setw(4) << std::setfill('0') << combineLittleEndian(*(memoryPtr), *(memoryPtr + 1)) << ", Y {ABY}";
+            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << ", Y {ABY}";
             break;
         case AddressingMode::INDIRECT:
-            oss << " ($" << std::setw(4) << std::setfill('0') << combineLittleEndian(*(memoryPtr), *(memoryPtr + 1)) << ") {IND}";
+            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << ") {IND}";
             break;
         case AddressingMode::INDIRECT_X:
-            oss << " ($" << std::setw(4) << std::setfill('0') << combineLittleEndian(*(memoryPtr), *(memoryPtr + 1)) << ", X) {INX}";
+            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << ", X) {INX}";
             break;
         case AddressingMode::INDIRECT_Y:
-            oss << " ($" << std::setw(4) << std::setfill('0') << combineLittleEndian(*(memoryPtr), *(memoryPtr + 1)) << "), Y {INY}";
+            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << "), Y {INY}";
             break;
         default:
             oss << " {UNK}";
@@ -112,9 +100,4 @@ std::string Instruction::getStr(uint8_t* memory)
     }
 
     return oss.str();
-}
-
-void ADC::operation(CPU* cpu, uint8_t mem) const
-{
-    cpu->registers_.A += mem + cpu->registers_.P.C;
 }

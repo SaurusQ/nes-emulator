@@ -11,14 +11,14 @@ typedef union
 {
     struct
     {
-        uint8_t C : 1; // Carry
-        uint8_t Z : 1; // Zero
-        uint8_t I : 1; // Interrupt Disable
-        uint8_t D : 1; // Decimal Mode
-        uint8_t B : 1; // Break Command
-        uint8_t U : 1; // Unused (Always one)
-        uint8_t V : 1; // Overflow
-        uint8_t N : 1; // Negative
+        bool C : 1; // Carry
+        bool Z : 1; // Zero
+        bool I : 1; // Interrupt Disable
+        bool D : 1; // Decimal Mode
+        bool B : 1; // Break Command
+        bool U : 1; // Unused (Always one)
+        bool V : 1; // Overflow
+        bool N : 1; // Negative
     };
     uint8_t reg;
 } StatusRegister;
@@ -36,13 +36,12 @@ struct Registers
 class CPU
 {
     friend class Instruction;
-    friend class ADC;
     public:
         CPU(Memory& memory);
         ~CPU();
         void resetRegisters();
         void clockTick();
-        bool fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool& pageCrossed);
+        inline bool fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool& pageCrossed);
 
         void printStatus() const;
 
@@ -50,7 +49,6 @@ class CPU
         std::string getRegisterStatusStr(uint8_t& statusRegister) const;
         uint64_t    getCurrentCycle() const { return cycle_; }
         std::string getCurrentCycleStr() const { return "Cycles: " + std::to_string(cycle_); }
-        const Instruction* getCurrentInstruction() const { return currentInstruction_; }
         uint16_t getCurrentAddress() const { return registers_.PC; }
         bool nextInstruction() const { return insCyclesToExecute_ == 0; }
     private:
@@ -60,5 +58,4 @@ class CPU
         Memory& memory_;
         uint64_t cycle_ = 0;
         uint64_t insCyclesToExecute_ = 0;
-        const Instruction* currentInstruction_ = nullptr;
 };

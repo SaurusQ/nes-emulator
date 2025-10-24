@@ -19,7 +19,7 @@ enum AddressingMode
     INDIRECT_Y
 };
 
-constexpr uint16_t combineLittleEndian(uint8_t lowByte, uint8_t highByte) noexcept {
+constexpr uint16_t make16(uint8_t lowByte, uint8_t highByte) noexcept {
     return static_cast<uint16_t>(lowByte) | (static_cast<uint16_t>(highByte) << 8);
 }
 

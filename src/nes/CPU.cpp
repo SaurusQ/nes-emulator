@@ -47,16 +47,9 @@ void CPU::clockTick()
     memory_.read(registers_.PC, opcode);
     registers_.PC++;
 
-    auto it = opcodeMap.find(opcode);
-    if (it == opcodeMap.end()) {
-        //std::cerr << "Unknown opcode: " << std::hex << int(opcode) << "\n";
-        cycle_++;
-        return;
-    }
+    const Instruction& instruction = opcodeMap[opcode];
 
-    currentInstruction_ = it->second.get();
-
-    insCyclesToExecute_ = currentInstruction_->execute(this);
+    insCyclesToExecute_ = instruction.execute(this);
     
     cycle_++;
     insCyclesToExecute_--;
@@ -117,7 +110,7 @@ bool CPU::fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool
             registers_.PC++;
             memory_.read(registers_.PC, highByte);
             registers_.PC++;
-            targetAddress = combineLittleEndian(lowByte, highByte);
+            targetAddress = make16(lowByte, highByte);
             memory_.read(targetAddress, value);
             return true;
         case ABSOLUTE_X:
@@ -125,7 +118,7 @@ bool CPU::fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool
             registers_.PC++;
             memory_.read(registers_.PC, highByte);
             registers_.PC++;
-            targetAddress = combineLittleEndian(lowByte, highByte);
+            targetAddress = make16(lowByte, highByte);
             memory_.read(targetAddress + registers_.X, value);
             return true;
         case ABSOLUTE_Y:
@@ -133,7 +126,7 @@ bool CPU::fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool
             registers_.PC++;
             memory_.read(registers_.PC, highByte);
             registers_.PC++;
-            targetAddress = combineLittleEndian(lowByte, highByte);;
+            targetAddress = make16(lowByte, highByte);;
             memory_.read(targetAddress + registers_.Y, value);
             return true;
         case INDIRECT:
@@ -141,7 +134,7 @@ bool CPU::fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool
             registers_.PC++;
             memory_.read(registers_.PC, highByte);
             registers_.PC++;
-            targetAddress = combineLittleEndian(lowByte, highByte);
+            targetAddress = make16(lowByte, highByte);
             registers_.PC = targetAddress;
             return false;
         case INDIRECT_X:
@@ -151,7 +144,7 @@ bool CPU::fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool
             targetAddress = static_cast<uint16_t>(byte);
             memory_.read(targetAddress,     lowByte);
             memory_.read(targetAddress + 1, highByte);
-            targetAddress = combineLittleEndian(lowByte, highByte);
+            targetAddress = make16(lowByte, highByte);
             memory_.read(targetAddress, value);
             return true;
         case INDIRECT_Y:
@@ -160,7 +153,7 @@ bool CPU::fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool
             targetAddress = static_cast<uint16_t>(byte);
             memory_.read(targetAddress,     lowByte);
             memory_.read(targetAddress + 1, highByte);
-            targetAddress = combineLittleEndian(lowByte, highByte) + registers_.Y;
+            targetAddress = make16(lowByte, highByte) + registers_.Y;
             memory_.read(targetAddress, value);
             return true;
         default:
