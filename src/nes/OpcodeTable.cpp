@@ -38,6 +38,8 @@ inline const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0x0E] = {Instruction<ASL, ABSOLUTE>::execute,     6};
         t[0x1E] = {Instruction<ASL, ABSOLUTE_X>::execute,   7};
 
+        t[0x90] = {Instruction<BCC, RELATIVE>::execute,     2, 4, 3};
+
         return t;
     }();
 
@@ -73,6 +75,8 @@ inline const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0x16] = {"ASL", ZERO_PAGE_X,  2};
         t[0x0E] = {"ASL", ABSOLUTE,     3};
         t[0x1E] = {"ASL", ABSOLUTE_X,   3};
+
+        t[0x90] = {"BCC", RELATIVE,     2};
 
         return t;
     }();

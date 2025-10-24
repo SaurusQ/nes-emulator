@@ -12,56 +12,64 @@ inline void setZN(StatusRegister& reg, uint8_t value)
 
 
 // --- Instructions ---
-template <InstructionType IT>
+template <InstructionType IT, AddressingMode AM>
 struct Operation
 {
-    inline static void operation(CPU& cpu, uint8_t mem)
+    inline static bool execute(CPU& cpu, uint8_t mem, uint16_t targetAddress)
     {
-        static_assert(IT != IT, "Operation not implemented for this InstructionType");
-    }
-};
+        switch (IT)
+        {
+            case ADC:
+                {
+                    uint8_t A = cpu.registers_.A;
+                    cpu.registers_.P.C = __builtin_add_overflow(cpu.registers_.A, mem, &cpu.registers_.A);
+                    cpu.registers_.P.V = ((cpu.registers_.A ^ A) & (cpu.registers_.A ^ mem) & 0x80);
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            
+            case AND:
+                {
+                    cpu.registers_.A &= mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+    
+            case ASL:
+                {
+                    cpu.registers_.P.C = mem & 0x80;
+                    mem <<= 1;
+                    setZN(cpu.registers_.P, mem);
+                    if (AM == ACCUMULATOR)
+                    {
+                        cpu.registers_.A = mem;
+                    }
+                    else
+                    {
+                        cpu.memory_.store(targetAddress, mem);
+                    }
+                    return false;
+                }
+    
+            case BCC:
+                {
+                    if (!cpu.registers_.P.C)
+                    {
+                        cpu.registers_.PC += static_cast<int8_t>(mem);
+                        return true;
+                    }
+                    return false;
+                }
 
-template <>
-struct Operation<ADC>
-{
-    inline static void operation(CPU& cpu, uint8_t mem)
-    {
-        uint8_t A = cpu.registers_.A;
-        cpu.registers_.P.C = __builtin_add_overflow(cpu.registers_.A, mem, &cpu.registers_.A);
-        cpu.registers_.P.V = ((cpu.registers_.A ^ A) & (cpu.registers_.A ^ mem) & 0x80);
-        setZN(cpu.registers_.P, cpu.registers_.A);
-    }
-};
-
-template <>
-struct Operation<AND>
-{
-    inline static void operation(CPU& cpu, uint8_t mem)
-    {
-        cpu.registers_.A &= mem;
-        setZN(cpu.registers_.P, cpu.registers_.A);
-    }
-};
-
-template <>
-struct Operation<ASL>
-{
-    inline static void operation(CPU& cpu, uint8_t mem)
-    {
-        (void)mem;
-        cpu.registers_.P.C = cpu.registers_.A & 0x80;
-        cpu.registers_.A <<= 1;
-        setZN(cpu.registers_.P, cpu.registers_.A);
-    }
-};
-
-template <>
-struct Operation<NOP>
-{
-    inline static void operation(CPU& cpu, uint8_t mem)
-    {
-        // Do nothing
-        (void)cpu;
-        (void)mem;
+            case NOP:
+                {
+                    // Do nothing
+                    return false;
+                }
+    
+            default:
+                throw std::runtime_error("Operation not implemented");
+                break;
+        }
     }
 };

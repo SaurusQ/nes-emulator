@@ -28,5 +28,6 @@ enum InstructionType
     ADC,
     AND,
     ASL,
+    BCC,
     NOP
 };

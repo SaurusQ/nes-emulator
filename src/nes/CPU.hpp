@@ -35,7 +35,7 @@ class CPU
 {
     template<AddressingMode AM>
     friend struct MemoryAddressing;
-    template<InstructionType IT>
+    template<InstructionType IT, AddressingMode AM>
     friend class Operation;
     public:
         CPU(Memory& memory);

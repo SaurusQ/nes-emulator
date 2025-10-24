@@ -17,13 +17,16 @@ struct InstructionData
 {
     InstructionData() = default;
     InstructionData(ExecuteFunc execute, uint8_t cycles)
-        : execute(execute), cycles(cycles), cyclesPageCrossed(cycles) {}
+        : execute(execute), cycles(cycles), cyclesPageCrossed(cycles), cyclesBranched(cycles) {}
     InstructionData(ExecuteFunc execute, uint8_t cycles, uint8_t cyclesPageCrossed)
-        : execute(execute), cycles(cycles), cyclesPageCrossed(cyclesPageCrossed) {}
-
+        : execute(execute), cycles(cycles), cyclesPageCrossed(cyclesPageCrossed), cyclesBranched(cycles) {}
+    InstructionData(ExecuteFunc execute, uint8_t cycles, uint8_t cyclesPageCrossed, uint8_t cyclesBranched)
+        : execute(execute), cycles(cycles), cyclesPageCrossed(cyclesPageCrossed), cyclesBranched(cyclesBranched) {}
+    
     ExecuteFunc     execute;
     uint8_t         cycles;
     uint8_t         cyclesPageCrossed;
+    uint8_t         cyclesBranched;
 };
 
 struct InstructionInfo
@@ -37,14 +40,19 @@ template <InstructionType IT, AddressingMode AM>
 class Instruction
 {
     public:
-        inline static uint8_t execute(CPU& cpu, const InstructionData& data) {
+        inline static uint8_t execute(CPU& cpu, const InstructionData& data)
+        {
             uint8_t mem = 0x00;
             uint8_t value = 0x00;
             uint16_t targetAddress = 0x0000;
             bool pageCrossed = false;
 
             MemoryAddressing<AM>::fetch(cpu, targetAddress, value, pageCrossed);
-            Operation<IT>::operation(cpu, mem);
+
+            if (Operation<IT, AM>::execute(cpu, mem, targetAddress))
+            {
+                return data.cyclesBranched;
+            }
 
             return pageCrossed ? data.cyclesPageCrossed : data.cycles;
         }
@@ -53,11 +61,7 @@ class Instruction
 class InstructionHelper
 {
     public:
-        virtual ~InstructionHelper() = default;
-
         static std::string getStr(const InstructionInfo& info, uint8_t* memory);
-
         static std::string getInstructionListString(uint16_t address, const Memory& memory, unsigned int count);
-
 };
 
