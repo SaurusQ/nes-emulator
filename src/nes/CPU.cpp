@@ -1,7 +1,7 @@
 
 #include "CPU.hpp"
 
-#include "OpcodeMap.hpp"
+#include "OpcodeTable.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -47,10 +47,10 @@ void CPU::clockTick()
     memory_.read(registers_.PC, opcode);
     registers_.PC++;
 
-    const Instruction& instruction = opcodeMap[opcode];
+    const auto& instruction = opcodeTable[opcode];
 
-    insCyclesToExecute_ = instruction.execute(this);
-    
+    insCyclesToExecute_ = instruction.execute(*this, instruction);
+
     cycle_++;
     insCyclesToExecute_--;
 }
@@ -119,7 +119,7 @@ bool CPU::fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool
             memory_.read(registers_.PC, highByte);
             registers_.PC++;
             targetAddress = make16(lowByte, highByte);
-            memory_.read(targetAddress + registers_.X, value);
+            memory_.read(0xFF & (targetAddress + registers_.X), value);
             return true;
         case ABSOLUTE_Y:
             memory_.read(registers_.PC, lowByte);

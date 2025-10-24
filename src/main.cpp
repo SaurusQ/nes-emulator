@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
         registerStr = nes.getCpu().getRegisterStatusStr(statusRegister);
         if (nes.getCpu().nextInstruction())
         {
-            instructionStr = Instruction::getInstructionListString(nes.getCpu().getCurrentAddress(), nes.getMemory(), 3);
+            instructionStr = InstructionHelper::getInstructionListString(nes.getCpu().getCurrentAddress(), nes.getMemory(), 3);
         }
         
 

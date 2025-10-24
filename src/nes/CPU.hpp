@@ -5,8 +5,6 @@
 
 #include <cstdint>
 
-class Instruction;
-
 typedef union
 {
     struct
@@ -35,7 +33,10 @@ struct Registers
 
 class CPU
 {
-    friend class Instruction;
+    template<AddressingMode AM>
+    friend struct MemoryAddressing;
+    template<InstructionType IT>
+    friend class Operation;
     public:
         CPU(Memory& memory);
         ~CPU();

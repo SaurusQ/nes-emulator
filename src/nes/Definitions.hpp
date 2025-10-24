@@ -23,3 +23,10 @@ constexpr uint16_t make16(uint8_t lowByte, uint8_t highByte) noexcept {
     return static_cast<uint16_t>(lowByte) | (static_cast<uint16_t>(highByte) << 8);
 }
 
+enum InstructionType
+{
+    ADC,
+    AND,
+    ASL,
+    NOP
+};

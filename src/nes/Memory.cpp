@@ -7,7 +7,7 @@
 #include <iomanip>
 
 
-constexpr size_t MEMORY_SIZE = 65536;
+constexpr size_t MEMORY_SIZE = 0xFFFF;
 
 Memory::Memory()
 {

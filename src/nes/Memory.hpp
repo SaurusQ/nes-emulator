@@ -7,6 +7,7 @@
 
 class Memory
 {
+    template<InstructionType IT, AddressingMode AM>
     friend class Instruction;
     public:
         Memory();

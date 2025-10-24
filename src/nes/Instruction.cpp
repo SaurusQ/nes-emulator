@@ -1,24 +1,12 @@
 
 #include "Instruction.hpp"
-#include "OpcodeMap.hpp"
+#include "OpcodeTable.hpp"
 
 #include <sstream>
 #include <iostream>
 #include <iomanip>
 
-Instruction::Instruction(uint8_t opcode, const char* name, OperationFunc operation, AddressingMode mode, uint8_t bytes, uint8_t cycles)
-    : Instruction::Instruction(opcode, name, operation, mode, bytes, cycles, cycles)
-{
-
-}
-
-Instruction::Instruction(uint8_t opcode, const char* name, OperationFunc operation, AddressingMode mode, uint8_t bytes, uint8_t cycles, uint8_t cyclesPageCrossed)
-    : opcode_(opcode), name_(name), operation_(operation), mode_(mode), bytes_(bytes), cycles_(cycles), cyclesPageCrossed_(cyclesPageCrossed)
-{
-
-}
-
-std::string Instruction::getInstructionListString(uint16_t address, const Memory& memory, unsigned int count)
+std::string InstructionHelper::getInstructionListString(uint16_t address, const Memory& memory, unsigned int count)
 {
     std::ostringstream oss;
     oss << std::hex << std::uppercase;
@@ -34,26 +22,26 @@ std::string Instruction::getInstructionListString(uint16_t address, const Memory
         }
         uint8_t opcode = *(memoryPtr + address);
 
-        const Instruction& instruction = opcodeMap[opcode];
-        if (address + instruction.getLenght() > memory.size())
+        const InstructionInfo& instructionInfo = opcodeInfoTable[opcode];
+        if (address + instructionInfo.bytes > memory.size())
         {
             oss << "OVF";
             break;
         }
-        oss << "$" << std::setw(4) << std::setfill('0') << address << " " << instruction.getStr(memoryPtr + address) << "\n";
-        address += instruction.getLenght();
+        oss << "$" << std::setw(4) << std::setfill('0') << address << " " << getStr(instructionInfo, memoryPtr + address) << "\n";
+        address += instructionInfo.bytes;
     }
     return oss.str();
 }
 
-std::string Instruction::getStr(uint8_t* memory) const
+std::string InstructionHelper::getStr(const InstructionInfo& info, uint8_t* memory)
 {
     std::ostringstream oss;
-    oss << std::hex << std::uppercase << name_;
+    oss << std::hex << std::uppercase << info.name;
 
     uint8_t* memoryPtr = memory + 1; // Skip opcode
 
-    switch (mode_)
+    switch (info.mode)
     {
         case AddressingMode::IMPLICIT:
             oss << " {IMP}";
