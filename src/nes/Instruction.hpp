@@ -43,11 +43,10 @@ class Instruction
         inline static uint8_t execute(CPU& cpu, const InstructionData& data)
         {
             uint8_t mem = 0x00;
-            uint8_t value = 0x00;
             uint16_t targetAddress = 0x0000;
             bool pageCrossed = false;
 
-            MemoryAddressing<AM>::fetch(cpu, targetAddress, value, pageCrossed);
+            MemoryAddressing<AM>::fetch(cpu, targetAddress, mem, pageCrossed);
 
             if (Operation<IT, AM>::execute(cpu, mem, targetAddress))
             {
