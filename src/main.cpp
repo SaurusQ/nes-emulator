@@ -55,6 +55,7 @@ int main(int argc, char* argv[])
     SDL_SetRenderLogicalPresentation(renderer, screenWidth, screenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
     DrawHandler drawHandler(renderer);
+    EventHandler eventHandler;
 
     NES nes;
     nes.powerOn();
@@ -76,7 +77,7 @@ int main(int argc, char* argv[])
     uint32_t lastTime = SDL_GetTicks();
 
     while (!done) {
-        done = EventHandler::sdlPollEvent();
+        done = eventHandler.sdlPollEvent();
 
         uint32_t currentTime = SDL_GetTicks();
         if (currentTime - lastTime >= interval) {
@@ -84,7 +85,7 @@ int main(int argc, char* argv[])
             lastTime = currentTime;
         }
 
-        memoryStr = nes.getMemory().getMemoryRegionStr(0x0000, 8 * 16);
+        memoryStr = nes.getMemory().getMemoryRegionStr(eventHandler.memoryPointer, 8 * 16);
         registerStr = nes.getCpu().getRegisterStatusStr(statusRegister);
         if (nes.getCpu().nextInstruction())
         {
@@ -97,6 +98,7 @@ int main(int argc, char* argv[])
         // Status panel
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(memoryStr, statusPanelX, statusPanelY);
         statusRegisterY = previousBottomY;
+        eventHandler.setMemoryScrollArea(statusPanelX, statusPanelY, previousBottomX, previousBottomY);
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(registerStr, statusPanelX, previousBottomY + 20);
         drawHandler.drawStatusRegister(statusRegister, statusPanelX + 150, statusRegisterY + 20);
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(nes.getCpu().getCurrentCycleStr(), statusPanelX, previousBottomY + 10);
