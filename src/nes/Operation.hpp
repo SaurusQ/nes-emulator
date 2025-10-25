@@ -114,7 +114,13 @@ struct Operation
                 }
             case BRK:
                 {
-                    // TODO
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), getHighByte(cpu.registers_.PC));
+                    cpu.registers_.SP--;
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), getLowByte(cpu.registers_.PC));
+                    cpu.registers_.SP--;
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), cpu.registers_.P.reg);
+                    cpu.registers_.SP--;
+                    cpu.registers_.PC = 0xFFFE; // IRQ, interrupt request
                     return false;
                 }
             case BVC:
@@ -145,7 +151,7 @@ struct Operation
                     cpu.registers_.P.D = 0x00;
                     return false;
                 }
-            case CLI:
+            case CLI: // TODO IRQ
                 {
                     cpu.registers_.P.I = 0x00;
                     return false;
@@ -221,13 +227,17 @@ struct Operation
                     return false;
                 }
             case JMP:
-                { // TODO it reads the next byte from the targetaddress, not correct of JMP
+                { // It reads the next byte from the targetaddress, not correct of JMP
                     cpu.registers_.PC = targetAddress;
                     return false;
                 }
             case JSR:
                 {
-                    // TODO
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), getHighByte(cpu.registers_.PC));
+                    cpu.registers_.SP--;
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), getLowByte(cpu.registers_.PC));
+                    cpu.registers_.SP--;
+                    cpu.registers_.PC = mem;
                     return false;
                 }
             case LDA:
@@ -261,22 +271,29 @@ struct Operation
                 }
             case PHA:
                 {
-                    // TODO
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), cpu.registers_.A);
+                    cpu.registers_.SP--;
                     return false;
                 }
             case PHP:
                 {
-                    // TODO
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), bAsHigh(cpu.registers_.P.reg));
+                    cpu.registers_.SP--;
                     return false;
                 }
             case PLA:
                 {
-                    // TODO
+                    cpu.registers_.SP++;
+                    cpu.memory_.read(spToAddr(cpu.registers_.SP), cpu.registers_.A);
+                    setZN(cpu.registers_.P, cpu.registers_.A);
                     return false;
                 }
-            case PLP:
+            case PLP: // TODO IRQ
                 {
-                    // TODO
+                    cpu.registers_.SP++;
+                    uint8_t byte;
+                    cpu.memory_.read(spToAddr(cpu.registers_.SP), byte);
+                    cpu.registers_.P.reg = readStatusWithoutUB(cpu.registers_.P.reg, byte);
                     return false;
                 }
             case ROL:
@@ -311,12 +328,26 @@ struct Operation
                 }
             case RTI:
                 {
-                    // TODO
+                    uint8_t byte, high, low;;
+                    cpu.registers_.SP++;
+                    cpu.memory_.read(spToAddr(cpu.registers_.SP), byte);
+                    cpu.registers_.P.reg = readStatusWithoutUB(cpu.registers_.P.reg, byte);
+                    cpu.registers_.SP++;
+                    cpu.memory_.read(spToAddr(cpu.registers_.SP), low);
+                    cpu.registers_.SP++;
+                    cpu.memory_.read(spToAddr(cpu.registers_.SP), high);
+                    cpu.registers_.PC = make16(low, high);
                     return false;
                 }
             case RTS:
                 {
-                    // TODO
+                    uint8_t high, low;
+                    cpu.registers_.SP++;
+                    cpu.memory_.read(spToAddr(cpu.registers_.SP), low);
+                    cpu.registers_.SP++;
+                    cpu.memory_.read(spToAddr(cpu.registers_.SP), high);
+                    cpu.registers_.PC = make16(low, high);
+                    cpu.registers_.PC++;
                     return false;
                 }
             case SBC:
@@ -340,7 +371,7 @@ struct Operation
                     cpu.registers_.P.D = 0x01;
                     return false;
                 }
-            case SEI:
+            case SEI: // TODO IRQ
                 {
                     cpu.registers_.P.I = 0x01;
                     return false;

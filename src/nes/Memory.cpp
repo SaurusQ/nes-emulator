@@ -7,12 +7,12 @@
 #include <iomanip>
 
 
-constexpr size_t MEMORY_SIZE = 0xFFFF;
+constexpr size_t MEMORY_SIZE = 0x010000;
 
 Memory::Memory()
 {
     memory_ = std::make_unique<uint8_t[]>(MEMORY_SIZE);
-    std::memset(memory_.get(), 0x00, MEMORY_SIZE);
+    std::memset(memory_.get(), 0xEA, MEMORY_SIZE); // Fill with NOP
 
     std::cout << "Memory initialized" << std::endl;
 }

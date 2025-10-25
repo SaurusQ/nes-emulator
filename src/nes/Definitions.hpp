@@ -2,10 +2,34 @@
 
 #include <cstdint>
 
+constexpr uint16_t make16(uint8_t lowByte, uint8_t highByte) noexcept {
+    return static_cast<uint16_t>(lowByte) | (static_cast<uint16_t>(highByte) << 8);
+}
+
+constexpr uint16_t spToAddr(uint8_t sp) noexcept {
+    return static_cast<uint16_t>(0x0100 | sp);
+}
+
+constexpr uint8_t bAsHigh(uint8_t p) noexcept {
+    return 0x10 | p;
+}
+
+constexpr uint8_t readStatusWithoutUB(uint8_t p, uint8_t res) noexcept {
+    return (res & ~0x30) | (p & 0x30);
+}
+
+constexpr uint8_t getHighByte(uint16_t value) noexcept {
+    return static_cast<uint8_t>(value >> 8);
+}
+
+constexpr uint8_t getLowByte(uint16_t value) noexcept {
+    return static_cast<uint8_t>(value & 0x00FF);
+}
+
 enum AddressingMode
 {
     IMPLICIT,
-    IMPLICIT_SKIP, // Instrucitons that skip the next byte
+    IMPLICIT_SKIP, // Instructions that skip the next byte
     ACCUMULATOR,
     IMMEDIATE,
     ZERO_PAGE,
@@ -19,10 +43,6 @@ enum AddressingMode
     INDIRECT_X,
     INDIRECT_Y
 };
-
-constexpr uint16_t make16(uint8_t lowByte, uint8_t highByte) noexcept {
-    return static_cast<uint16_t>(lowByte) | (static_cast<uint16_t>(highByte) << 8);
-}
 
 enum InstructionType
 {

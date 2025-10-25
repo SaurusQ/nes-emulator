@@ -49,6 +49,11 @@ void CPU::clockTick()
 
     const auto& instruction = opcodeTable[opcode];
 
+    #if 1
+        const auto& insInfo = opcodeInfoTable[opcode];
+        std::cout << "Opcode: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(opcode) << " " << insInfo.name << std::endl;
+    #endif
+
     insCyclesToExecute_ = instruction.execute(*this, instruction);
 
     cycle_++;
