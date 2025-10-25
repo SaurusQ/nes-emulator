@@ -4,7 +4,9 @@ build/
 
 *.nes
 *.bin
+*.log
 program/
+trace/
 
 CMakeFiles/
 CMakeCache.txt

@@ -45,15 +45,41 @@ void CPU::clockTick()
     
     uint8_t opcode = 0x00;
     memory_.read(registers_.PC, opcode);
-    registers_.PC++;
-
+    
     const auto& instruction = opcodeTable[opcode];
-
+    
     #if 1
-        const auto& insInfo = opcodeInfoTable[opcode];
-        std::cout << "Opcode: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(opcode) << " " << insInfo.name << std::endl;
+    const auto& insInfo = opcodeInfoTable[opcode];
+    std::cout << "Opcode: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(opcode) << " " << insInfo.name << std::endl;
     #endif
+    
+    if (trace_)
+    {
+        std::ostringstream oss;
+        oss << std::hex << std::uppercase << std::setfill('0') << std::setw(4) << static_cast<int>(registers_.PC) << "  ";
+        for (int i = 0; i < insInfo.bytes; i++)
+        {
+            uint8_t byte;
+            memory_.read(registers_.PC + i, byte);
+            oss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << static_cast<int>(byte) << " ";
+        }
+        int padBytes = 3 - insInfo.bytes;
+        for (int i = 0; i < padBytes; i++) {
+            oss << "   ";
+        }
 
+        oss << " " << InstructionHelper::getInstructionString(insInfo, registers_.PC, memory_)
+            <<   "A:" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.A)
+            <<  " X:" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.X)
+            <<  " Y:" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.Y)
+            <<  " P:" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.P.reg)
+            << " SP:" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.SP)
+            << "\n";
+
+        traceFile_ << oss.str();
+    }
+    
+    registers_.PC++; // Go over opcode
     insCyclesToExecute_ = instruction.execute(*this, instruction);
 
     cycle_++;
@@ -166,6 +192,45 @@ bool CPU::fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool
             std::runtime_error("Addressing mode not implemented");
             return false;
     }
+}
+
+bool CPU::startTrace() const
+{
+    std::filesystem::create_directories(tracePath_.parent_path());
+
+    traceFile_.open(tracePath_, std::ios::out);
+    trace_ = true;
+    if (!traceFile_.is_open())
+    {
+        std::cerr << "Error: cannot open trace.log" << std::endl;
+        trace_ = false;
+    }
+    return trace_;
+}
+
+void CPU::stopTrace() const
+{
+    if (!trace_) return;
+    trace_ = false;
+    traceFile_.close();
+
+    auto now = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(now);
+
+    // Format time as YYYY-MM-DD_HH-MM-SS
+    std::tm tm;
+    #if defined(_WIN32)
+        localtime_s(&tm, &t);  // Windows
+    #else
+        localtime_r(&t, &tm);  // POSIX
+    #endif
+
+    std::ostringstream oss;
+    oss << "trace_"
+        << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S")
+        << ".log";
+
+    std::filesystem::copy(tracePath_, tracePath_.parent_path() / oss.str());
 }
 
 void CPU::printStatus() const

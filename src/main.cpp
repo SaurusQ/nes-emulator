@@ -60,6 +60,7 @@ int main(int argc, char* argv[])
     NES nes;
     nes.powerOn();
     nes.loadDotNESDirectToMemory("./program/nestest.nes");
+    nes.getCpu().startTrace();
 
     constexpr int statusPanelX = 10;
     constexpr int statusPanelY =  10;
@@ -73,7 +74,7 @@ int main(int argc, char* argv[])
     int previousBottomY = 0;
     int statusRegisterY = 0;
 
-    const uint32_t interval = 500; // ms
+    const uint32_t interval = 100; // ms
     uint32_t lastTime = SDL_GetTicks();
 
     while (!done) {
@@ -106,6 +107,8 @@ int main(int argc, char* argv[])
 
         SDL_RenderPresent(renderer);
     }
+
+    nes.getCpu().stopTrace();
 
     SDL_DestroyWindow(window);
     SDL_Quit();

@@ -5,6 +5,67 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <vector>
+
+std:: string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, const Memory& memory)
+{
+    std::ostringstream oss;
+    oss << std::hex << std::uppercase << info.name;
+
+    uint8_t* memoryPtr = memory.getMemoryPtr() + address + 1; // Skip opcode
+
+    std::vector<uint8_t> bytes;
+    for (int i = 0; i < info.bytes; i++)
+    {
+        bytes.push_back(memoryPtr[i]);
+    }
+    uint16_t twoBytes = 0;
+    if (bytes.size() >= 2)
+    {
+        twoBytes = make16(bytes[0], bytes[1]);
+    }
+
+    switch (info.mode) // TODO needs also custom code per instruction
+    {
+        case AddressingMode::IMPLICIT:
+        case AddressingMode::IMPLICIT_SKIP:
+            break;
+        case AddressingMode::ACCUMULATOR:
+            break;
+        case AddressingMode::IMMEDIATE:
+            oss << " #$" << std::setw(2) << std::setfill('0') << static_cast<int>(bytes[0]);
+            break;
+        case AddressingMode::ZERO_PAGE:
+            break;
+        case AddressingMode::ZERO_PAGE_X:
+            break;
+        case AddressingMode::ZERO_PAGE_Y:
+            break;
+        case AddressingMode::RELATIVE:
+            oss << " $" << std::setw(4) << std::setfill('0') << static_cast<int>(twoBytes);
+            break;
+        case AddressingMode::ABSOLUTE:
+            break;
+        case AddressingMode::ABSOLUTE_X:
+            break;
+        case AddressingMode::ABSOLUTE_Y:
+            break;
+        case AddressingMode::INDIRECT:
+            break;
+        case AddressingMode::INDIRECT_X:
+            break;
+        case AddressingMode::INDIRECT_Y:
+            break;
+        default:
+            oss << " UNK";
+            break;
+    }
+
+    std::string s = oss.str();
+    size_t pad = 32 - s.size();
+
+    return s.append(pad, ' ');
+}
 
 std::string InstructionHelper::getInstructionListString(uint16_t address, const Memory& memory, unsigned int count)
 {

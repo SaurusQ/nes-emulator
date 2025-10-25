@@ -4,6 +4,8 @@
 #include "Memory.hpp"
 
 #include <cstdint>
+#include <fstream>
+#include <filesystem>
 
 typedef union
 {
@@ -44,6 +46,9 @@ class CPU
         void clockTick();
         inline bool fetch(AddressingMode am, uint16_t& targetAddress, uint8_t& value, bool& pageCrossed);
 
+        bool startTrace() const;
+        void stopTrace() const;
+
         void printStatus() const;
 
         std::string getRegisterStatusStr() const { return getRegisterStatusStr(false); }
@@ -59,4 +64,8 @@ class CPU
         Memory& memory_;
         uint64_t cycle_ = 0;
         uint64_t insCyclesToExecute_ = 0;
+
+        mutable bool trace_ = false;
+        mutable std::ofstream traceFile_;
+        const std::filesystem::path tracePath_ = "./trace/trace.log";
 };
