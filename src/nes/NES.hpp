@@ -13,6 +13,8 @@ class NES
         void reset();
         void runCycle();
 
+        void loadDotNESDirectToMemory(const char* filename);
+
         const CPU& getCpu() const { return cpu_; }
         const Memory& getMemory() const { return memory_; }
 

@@ -58,6 +58,7 @@ int main(int argc, char* argv[])
 
     NES nes;
     nes.powerOn();
+    nes.loadDotNESDirectToMemory("./program/nestest.nes");
 
     constexpr int statusPanelX = 10;
     constexpr int statusPanelY =  10;
