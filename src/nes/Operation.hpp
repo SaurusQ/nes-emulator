@@ -1,6 +1,5 @@
 
 #include "CPU.hpp"
-
 using InstructionType = ::InstructionType;
 
 // --- Helper functions ---
@@ -77,12 +76,12 @@ struct Operation
                 }
             case BIT:
                 {
-                    if (cpu.registers_.A & mem)
+                    if (!(cpu.registers_.A & mem))
                     {
-                        cpu.registers_.P.Z = cpu.registers_.A;
-                        cpu.registers_.P.V = 0x40 & mem;
-                        cpu.registers_.P.N = 0x80 & mem;
+                        cpu.registers_.P.Z = 0x01;
                     }
+                    cpu.registers_.P.V = 0x40 & mem;
+                    cpu.registers_.P.N = 0x80 & mem;
                     return false;
                 }
             case BMI:

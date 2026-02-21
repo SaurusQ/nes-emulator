@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
     int previousBottomY = 0;
     int statusRegisterY = 0;
 
-    const uint32_t interval = 100; // ms
+    const uint32_t interval = 10; // ms
     uint32_t lastTime = SDL_GetTicks();
 
     while (!done) {
