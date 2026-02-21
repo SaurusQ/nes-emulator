@@ -259,9 +259,14 @@ struct Operation
                 }
             case LSR:
                 {
-                    cpu.registers_.A = mem >> 1;
-                    setZN(cpu.registers_.P, cpu.registers_.A);
-                    cpu.registers_.P.C = mem & 0x01;
+                    bool newCarry = mem & 0x01;
+                    mem >>= 1;
+                    cpu.registers_.P.C = newCarry;
+
+                    if (AM == ACCUMULATOR) cpu.registers_.A = mem;
+                    else cpu.memory_.store(targetAddress, mem);
+
+                    setZN(cpu.registers_.P, mem);
                     return false;
                 }
             case NOP:

@@ -91,19 +91,13 @@ struct MemoryAddressing
 
             case INDIRECT: // Only JMP supports
                 cpu.memory_.read(cpu.registers_.PC, low);
-                if ((0xFF & cpu.registers_.PC) == 0xFF)
-                { // JMP CPU bug, fails when crossing a page, JMP ($03FF) reads $03FF and $0300 instead of $0400
-                    cpu.memory_.read((cpu.registers_.PC & 0xFF00), high);
-                    cpu.registers_.PC += 2;
-                }
-                else
-                {
-                    cpu.registers_.PC++;
-                    cpu.memory_.read(cpu.registers_.PC, high);
-                    cpu.registers_.PC++;
-                }
+                cpu.registers_.PC++;
+                cpu.memory_.read(cpu.registers_.PC, high);
+                cpu.registers_.PC++;
                 targetAddress = make16(low, high);
-                cpu.registers_.PC = targetAddress;
+                cpu.memory_.read(targetAddress, low);
+                cpu.memory_.read((targetAddress & 0xFF00) + ((targetAddress + 1) & 0x00FF), high);
+                targetAddress = make16(low, high);
                 return false;
 
             case INDIRECT_X:
