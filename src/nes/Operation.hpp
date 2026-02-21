@@ -237,7 +237,7 @@ struct Operation
                     cpu.registers_.SP--;
                     cpu.memory_.store(spToAddr(cpu.registers_.SP), getLowByte(cpu.registers_.PC));
                     cpu.registers_.SP--;
-                    cpu.registers_.PC = mem;
+                    cpu.registers_.PC = targetAddress;
                     return false;
                 }
             case LDA:
