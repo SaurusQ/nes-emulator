@@ -304,17 +304,16 @@ struct Operation
                 }
             case ROL:
                 {
-                    cpu.registers_.P.C = mem & 0x80;
+                    bool newCarry = mem & 0x80;
                     mem <<= 1;
-                    setZN(cpu.registers_.P, mem);
-                    if (AM == ACCUMULATOR)
-                    {
-                        cpu.registers_.A = mem;
-                    }
-                    else
-                    {
-                        cpu.memory_.store(targetAddress, mem);
-                    }
+                    mem |= cpu.registers_.P.C;
+                    cpu.registers_.P.C = newCarry;
+                    
+                    if (AM == ACCUMULATOR) cpu.registers_.A = mem;
+                    else cpu.memory_.store(targetAddress, mem);
+
+                    cpu.registers_.P.N = (mem & 0x80) != 0;
+                    cpu.registers_.P.Z = cpu.registers_.A == 0;
                     return false;
                 }
             case ROR:
