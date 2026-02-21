@@ -3,7 +3,7 @@ import argparse
 truth_path = "./program/nestest.log"
 trace_path = "./trace/trace.log"
 
-skip_trace_lines_start = 2
+skip_trace_lines_start = 0
 
 RED = "\033[31m"
 RESET = "\033[0m"

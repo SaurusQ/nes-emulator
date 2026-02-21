@@ -11,7 +11,8 @@
 CPU::CPU(Memory& memory)
     : memory_(memory)
 {
-    registers_.PC   = 0xFFFC;
+    //registers_.PC   = 0xFFFC;
+    registers_.PC   = 0xC000;
     registers_.SP   = 0xFD; // Decremented by 3 after each reset
     registers_.A    = 0x00;
     registers_.X    = 0x00;
@@ -49,7 +50,7 @@ void CPU::clockTick()
     const auto& instruction = opcodeTable[opcode];
     
     const auto& insInfo = opcodeInfoTable[opcode];
-    //std::cout << "Opcode: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(opcode) << " " << insInfo.name << std::endl;
+    std::cout << "Opcode: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(opcode) << " " << insInfo.name << std::endl;
     
     if (trace_)
     {

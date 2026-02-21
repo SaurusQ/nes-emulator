@@ -269,6 +269,8 @@ struct Operation
                     setZN(cpu.registers_.P, mem);
                     return false;
                 }
+            case SKB: // Unofficial
+            case IGN: // Unofficial
             case NOP:
                 {
                     // Do nothing

@@ -58,8 +58,4 @@ void NES::loadDotNESDirectToMemory(const char* filename)
 
     memory_.loadData(0xC000, programDataWithoutHeader.data(), PRG_ROM_SIZE);    
     
-    // JMP to 0xC000
-    memory_.store(0xFFFD, 0x4C);
-    memory_.store(0xFFFE, 0x00);
-    memory_.store(0xFFFF, 0xC0);
 }

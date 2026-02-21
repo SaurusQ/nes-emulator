@@ -80,6 +80,8 @@ enum InstructionType
     LDY,
     LSR,
     NOP,
+    SKB,
+    IGN,
     ORA,
     PHA,
     PHP,

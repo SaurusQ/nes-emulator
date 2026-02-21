@@ -139,6 +139,36 @@ const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0x5E] = {Instruction<LSR, ABSOLUTE_X>::execute,   7};
 
         t[0xEA] = {Instruction<NOP, IMPLICIT>::execute,     2};
+        t[0x1A] = {Instruction<NOP, IMPLICIT>::execute,     2}; // Unofficial
+        t[0x3A] = {Instruction<NOP, IMPLICIT>::execute,     2}; // Unofficial
+        t[0x5A] = {Instruction<NOP, IMPLICIT>::execute,     2}; // Unofficial
+        t[0x7A] = {Instruction<NOP, IMPLICIT>::execute,     2}; // Unofficial
+        t[0xDA] = {Instruction<NOP, IMPLICIT>::execute,     2}; // Unofficial
+        t[0xFA] = {Instruction<NOP, IMPLICIT>::execute,     2}; // Unofficial
+
+        t[0x80] = {Instruction<SKB, IMMEDIATE>::execute,    2}; // Unofficial
+        t[0x82] = {Instruction<SKB, IMMEDIATE>::execute,    2}; // Unofficial
+        t[0x89] = {Instruction<SKB, IMMEDIATE>::execute,    2}; // Unofficial
+        t[0xC2] = {Instruction<SKB, IMMEDIATE>::execute,    2}; // Unofficial
+        t[0xE2] = {Instruction<SKB, IMMEDIATE>::execute,    2}; // Unofficial
+        
+        t[0x0C] = {Instruction<IGN, ABSOLUTE>::execute,     4}; // Unofficial
+        t[0x1C] = {Instruction<IGN, ABSOLUTE_X>::execute,   4, 5}; // Unofficial
+        t[0x3C] = {Instruction<IGN, ABSOLUTE_X>::execute,   4, 5}; // Unofficial
+        t[0x5C] = {Instruction<IGN, ABSOLUTE_X>::execute,   4, 5}; // Unofficial
+        t[0x7C] = {Instruction<IGN, ABSOLUTE_X>::execute,   4, 5}; // Unofficial
+        t[0xDC] = {Instruction<IGN, ABSOLUTE_X>::execute,   4, 5}; // Unofficial
+        t[0xFC] = {Instruction<IGN, ABSOLUTE_X>::execute,   4, 5}; // Unofficial
+
+        t[0x04] = {Instruction<IGN, ZERO_PAGE>::execute,    3}; // Unofficial
+        t[0x44] = {Instruction<IGN, ZERO_PAGE>::execute,    3}; // Unofficial
+        t[0x64] = {Instruction<IGN, ZERO_PAGE>::execute,    3}; // Unofficial
+        t[0x14] = {Instruction<IGN, ZERO_PAGE_X>::execute,  4}; // Unofficial
+        t[0x34] = {Instruction<IGN, ZERO_PAGE_X>::execute,  4}; // Unofficial
+        t[0x54] = {Instruction<IGN, ZERO_PAGE_X>::execute,  4}; // Unofficial
+        t[0x74] = {Instruction<IGN, ZERO_PAGE_X>::execute,  4}; // Unofficial
+        t[0xD4] = {Instruction<IGN, ZERO_PAGE_X>::execute,  4}; // Unofficial
+        t[0xF4] = {Instruction<IGN, ZERO_PAGE_X>::execute,  4}; // Unofficial
 
         t[0x09] = {Instruction<ORA, IMMEDIATE>::execute,    2};
         t[0x05] = {Instruction<ORA, ZERO_PAGE>::execute,    3};
@@ -342,6 +372,36 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0x5E] = {"LSR", ABSOLUTE_X,   3};
 
         t[0xEA] = {"NOP", IMPLICIT,     1};
+        t[0x1A] = {"NOP", IMPLICIT,     1}; // Unofficial
+        t[0x3A] = {"NOP", IMPLICIT,     1}; // Unofficial
+        t[0x5A] = {"NOP", IMPLICIT,     1}; // Unofficial
+        t[0x7A] = {"NOP", IMPLICIT,     1}; // Unofficial
+        t[0xDA] = {"NOP", IMPLICIT,     1}; // Unofficial
+        t[0xFA] = {"NOP", IMPLICIT,     1}; // Unofficial
+
+        t[0x80] = {"SKB", IMMEDIATE,    2}; // Unofficial
+        t[0x82] = {"SKB", IMMEDIATE,    2}; // Unofficial
+        t[0x89] = {"SKB", IMMEDIATE,    2}; // Unofficial
+        t[0xC2] = {"SKB", IMMEDIATE,    2}; // Unofficial
+        t[0xE2] = {"SKB", IMMEDIATE,    2}; // Unofficial
+        
+        t[0x0C] = {"IGN", ABSOLUTE,     3}; // Unofficial
+        t[0x1C] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0x3C] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0x5C] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0x7C] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0xDC] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0xFC] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
+
+        t[0x04] = {"IGN", ZERO_PAGE,    2}; // Unofficial
+        t[0x44] = {"IGN", ZERO_PAGE,    2}; // Unofficial
+        t[0x64] = {"IGN", ZERO_PAGE,    2}; // Unofficial
+        t[0x14] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0x34] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0x54] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0x74] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0xD4] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0xF4] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
 
         t[0x09] = {"ORA", IMMEDIATE,    2};
         t[0x05] = {"ORA", ZERO_PAGE,    2};
