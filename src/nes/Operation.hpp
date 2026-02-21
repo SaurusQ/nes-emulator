@@ -345,7 +345,7 @@ struct Operation
                     cpu.memory_.read(spToAddr(cpu.registers_.SP), low);
                     cpu.registers_.SP++;
                     cpu.memory_.read(spToAddr(cpu.registers_.SP), high);
-                    cpu.registers_.PC = make16(low, high);
+                    cpu.registers_.PC = make16(low, high) - 1;
                     cpu.registers_.PC++;
                     return false;
                 }
