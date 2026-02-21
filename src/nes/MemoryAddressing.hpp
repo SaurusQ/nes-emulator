@@ -76,7 +76,7 @@ struct MemoryAddressing
                 cpu.registers_.PC++;
                 cpu.memory_.read(cpu.registers_.PC, high);
                 cpu.registers_.PC++;
-                targetAddress = 0xFF & (make16(low, high) + cpu.registers_.X);
+                targetAddress = make16(low, high) + cpu.registers_.X;
                 cpu.memory_.read(targetAddress, value);
                 return true;
 
@@ -85,7 +85,7 @@ struct MemoryAddressing
                 cpu.registers_.PC++;
                 cpu.memory_.read(cpu.registers_.PC, high);
                 cpu.registers_.PC++;
-                targetAddress = 0xFF & (make16(low, high) + cpu.registers_.Y);
+                targetAddress = make16(low, high) + cpu.registers_.Y;
                 cpu.memory_.read(targetAddress, value);
                 return true;
 
@@ -115,7 +115,7 @@ struct MemoryAddressing
                 cpu.memory_.read(cpu.registers_.PC, byte);
                 cpu.registers_.PC++;
                 targetAddress = byte;
-                cpu.memory_.read(targetAddress,              low);
+                cpu.memory_.read(targetAddress, low);
                 cpu.memory_.read((targetAddress + 1) & 0xFF, high);
                 targetAddress = make16(low, high) + cpu.registers_.Y;
                 cpu.memory_.read(targetAddress, value);
