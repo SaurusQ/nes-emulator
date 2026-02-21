@@ -17,7 +17,9 @@ def compare_traces(truth_path, trace_path, skip_lines):
         trace.readline()
 
     line_num = 1
-    first_diff = False
+    start_diff = False
+    first_diff = True
+    previous_line = None
     while True:
         truth_line = truth.readline()
         trace_line = trace.readline()
@@ -42,11 +44,16 @@ def compare_traces(truth_path, trace_path, skip_lines):
                 line_display += truth_line[i]
                 continue
 
-            first_diff = True
+            start_diff = True
             line_display += f"{RED}{trace_line[i]}{RESET}"
 
-        if first_diff or not skip_lines:
-            print(f"{line_num:3}: {line_display}")
+        line = f"{line_num:3}: {line_display}"
+        if start_diff or not skip_lines:
+            if first_diff and skip_lines:
+                print(previous_line)
+                first_diff = False
+            print(line)
+        previous_line = line
         line_num += 1
 
 if __name__ == "__main__":
