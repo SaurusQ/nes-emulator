@@ -109,10 +109,10 @@ struct MemoryAddressing
             case INDIRECT_X:
                 cpu.memory_.read(cpu.registers_.PC, byte);
                 cpu.registers_.PC++;
-                byte += cpu.registers_.Y; // Overflow expected
+                byte += cpu.registers_.X; // Overflow expected
                 targetAddress = byte;
-                cpu.memory_.read(targetAddress,     low);
-                cpu.memory_.read(targetAddress + 1, high);
+                cpu.memory_.read(targetAddress,              low);
+                cpu.memory_.read((targetAddress + 1) & 0xFF, high);
                 targetAddress = make16(low, high);
                 cpu.memory_.read(targetAddress, value);
                 return true;
@@ -121,8 +121,8 @@ struct MemoryAddressing
                 cpu.memory_.read(cpu.registers_.PC, byte);
                 cpu.registers_.PC++;
                 targetAddress = byte;
-                cpu.memory_.read(targetAddress,     low);
-                cpu.memory_.read(targetAddress + 1, high);
+                cpu.memory_.read(targetAddress,              low);
+                cpu.memory_.read((targetAddress + 1) & 0xFF, high);
                 targetAddress = make16(low, high) + cpu.registers_.Y;
                 cpu.memory_.read(targetAddress, value);
                 return true;
