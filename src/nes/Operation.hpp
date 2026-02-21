@@ -350,14 +350,7 @@ struct Operation
                 }
             case SBC:
                 {
-                    uint8_t A = cpu.registers_.A;
-                    uint8_t subs = mem + !cpu.registers_.P.C;
-                    cpu.registers_.P.C = (mem == 0xFF && !cpu.registers_.P.C) // Overflowed on the first phase
-                        | __builtin_sub_overflow(cpu.registers_.A, subs, &cpu.registers_.A);
-
-                    cpu.registers_.P.V = ((cpu.registers_.A ^ A) & (cpu.registers_.A ^ ~mem) & 0x80);
-                    setZN(cpu.registers_.P, cpu.registers_.A);
-                    return false;
+                    return Operation<ADC, AM>::execute(cpu, ~mem, targetAddress);
                 }
             case SEC:
                 {
