@@ -8,7 +8,7 @@ skip_trace_lines_start = 2
 RED = "\033[31m"
 RESET = "\033[0m"
 
-def compare_traces(truth_path, trace_path, skip_lines):
+def compare_traces(truth_path, trace_path, skip_lines, limit):
 
     truth = open(truth_path, "r")
     trace = open(trace_path, "r")
@@ -20,7 +20,7 @@ def compare_traces(truth_path, trace_path, skip_lines):
     start_diff = False
     first_diff = True
     previous_line = None
-    while True:
+    while limit != 0:
         truth_line = truth.readline()
         trace_line = trace.readline()
 
@@ -53,6 +53,7 @@ def compare_traces(truth_path, trace_path, skip_lines):
                 print(previous_line)
                 first_diff = False
             print(line)
+            limit -= 1
         previous_line = line
         line_num += 1
 
@@ -75,5 +76,10 @@ if __name__ == "__main__":
         help="Skip lines before first diff"
     )
 
+    parser.add_argument(
+        "-l", "--limit", type=int, default=-1,
+        help="Limit number of lines after fist diff"
+    )
+
     args = parser.parse_args()
-    compare_traces(args.truth, args.trace, args.skip_lines)
+    compare_traces(args.truth, args.trace, args.skip_lines, args.limit)

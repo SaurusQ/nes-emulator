@@ -231,9 +231,10 @@ struct Operation
                 }
             case JSR:
                 {
-                    cpu.memory_.store(spToAddr(cpu.registers_.SP), getHighByte(cpu.registers_.PC));
+                    uint16_t returnAddress = cpu.registers_.PC - 1;
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), getHighByte(returnAddress));
                     cpu.registers_.SP--;
-                    cpu.memory_.store(spToAddr(cpu.registers_.SP), getLowByte(cpu.registers_.PC));
+                    cpu.memory_.store(spToAddr(cpu.registers_.SP), getLowByte(returnAddress));
                     cpu.registers_.SP--;
                     cpu.registers_.PC = targetAddress;
                     return false;
@@ -254,6 +255,13 @@ struct Operation
                 {
                     cpu.registers_.Y = mem;
                     setZN(cpu.registers_.P, cpu.registers_.Y);
+                    return false;
+                }
+            case LSR:
+                {
+                    cpu.registers_.A = mem >> 1;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    cpu.registers_.P.C = mem & 0x01;
                     return false;
                 }
             case NOP:
@@ -344,7 +352,7 @@ struct Operation
                     cpu.memory_.read(spToAddr(cpu.registers_.SP), low);
                     cpu.registers_.SP++;
                     cpu.memory_.read(spToAddr(cpu.registers_.SP), high);
-                    cpu.registers_.PC = make16(low, high) - 1;
+                    cpu.registers_.PC = make16(low, high);
                     cpu.registers_.PC++;
                     return false;
                 }
@@ -418,7 +426,12 @@ struct Operation
                     return false;
                 }
             default:
-                throw std::runtime_error("Operation not implemented");
+                std::string errorMsg = "Operation not implemented: ";
+                errorMsg += "IT=" + std::to_string(static_cast<int>(IT));
+                errorMsg += " AM=" + std::to_string(static_cast<int>(AM));
+                errorMsg += " at PC=$" + std::to_string(cpu.registers_.PC);
+                
+                throw std::runtime_error(errorMsg);
         }
     }
 };
