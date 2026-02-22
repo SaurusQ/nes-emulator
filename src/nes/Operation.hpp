@@ -180,6 +180,16 @@ struct Operation
                     setZN(cpu.registers_.P, result);
                     return false;
                 }
+            case DCP: // Unofficial
+                {
+                    mem -= 1;
+                    cpu.memory_.store(targetAddress, mem);
+                    
+                    uint8_t result = cpu.registers_.A - mem;
+                    cpu.registers_.P.C = cpu.registers_.A >= mem;
+                    setZN(cpu.registers_.P, result);
+                    return false;
+                }
             case DEC:
                 {
                     mem -= 1;
@@ -224,6 +234,19 @@ struct Operation
                     setZN(cpu.registers_.P, cpu.registers_.Y);
                     return false;
                 }
+            case ISC: // Unofficial
+                {
+                    mem += 1;
+                    cpu.memory_.store(targetAddress, mem);
+                    mem = ~mem;
+                    uint8_t A = cpu.registers_.A;
+                    uint16_t sum = (uint16_t)cpu.registers_.A + (uint16_t)mem + (uint16_t)cpu.registers_.P.C;
+                    cpu.registers_.A = sum & 0xFF;
+                    cpu.registers_.P.C = sum > 0xFF;
+                    cpu.registers_.P.V = ((cpu.registers_.A ^ A) & (cpu.registers_.A ^ mem) & 0x80);
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
             case JMP:
                 { // It reads the next byte from the targetaddress, not correct of JMP
                     cpu.registers_.PC = targetAddress;
@@ -239,17 +262,17 @@ struct Operation
                     cpu.registers_.PC = targetAddress;
                     return false;
                 }
-            case LDA:
-                {
-                    cpu.registers_.A = mem;
-                    setZN(cpu.registers_.P, cpu.registers_.A);
-                    return false;
-                }
             case LAX: // Unofficial
                 {
                     cpu.registers_.A = mem;
                     cpu.registers_.X = cpu.registers_.A;
                     setZN(cpu.registers_.P, cpu.registers_.X);
+                    return false;
+                }
+            case LDA:
+                {
+                    cpu.registers_.A = mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
                     return false;
                 }
             case LDX:
@@ -316,6 +339,36 @@ struct Operation
                     cpu.registers_.P.reg = readStatusWithoutUB(cpu.registers_.P.reg, byte);
                     return false;
                 }
+            case RLA: // Unofficial
+                {
+                    bool newCarry = mem & 0x80;
+                    mem <<= 1;
+                    mem |= cpu.registers_.P.C;
+                    cpu.registers_.P.C = newCarry;
+                    
+                    cpu.memory_.store(targetAddress, mem);
+
+                    cpu.registers_.A &= mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            case RRA: // Unofficial
+                {
+                    bool newCarry = mem & 0x01;
+                    mem >>= 1;
+                    mem |= cpu.registers_.P.C << 7;
+                    cpu.registers_.P.C = newCarry;
+
+                    cpu.memory_.store(targetAddress, mem);
+                    
+                    uint8_t A = cpu.registers_.A;
+                    uint16_t sum = (uint16_t)cpu.registers_.A + (uint16_t)mem + (uint16_t)cpu.registers_.P.C;
+                    cpu.registers_.A = sum & 0xFF;
+                    cpu.registers_.P.C = sum > 0xFF;
+                    cpu.registers_.P.V = ((cpu.registers_.A ^ A) & (cpu.registers_.A ^ mem) & 0x80);
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
             case ROL:
                 {
                     bool newCarry = mem & 0x80;
@@ -368,6 +421,12 @@ struct Operation
                     cpu.registers_.PC++;
                     return false;
                 }
+            case SAX: // Unofficial
+                {
+                    uint8_t byte = cpu.registers_.A & cpu.registers_.X;
+                    cpu.memory_.store(targetAddress, byte);
+                    return false;
+                }
             case SBC:
                 {
                     return Operation<ADC, AM>::execute(cpu, ~mem, targetAddress);
@@ -387,6 +446,25 @@ struct Operation
                     cpu.registers_.P.I = 0x01;
                     return false;
                 }
+            case SLO: // Unofficial
+                {
+                    cpu.registers_.P.C = mem & 0x80;
+                    mem <<= 1;
+                    cpu.memory_.store(targetAddress, mem);
+                    cpu.registers_.A |= mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            case SRE: // Unofficial
+                {
+                    bool newCarry = mem & 0x01;
+                    mem >>= 1;
+                    cpu.registers_.P.C = newCarry;
+                    cpu.memory_.store(targetAddress, mem);
+                    cpu.registers_.A ^= mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
             case STA:
                 {
                     cpu.memory_.store(targetAddress, cpu.registers_.A);
@@ -395,12 +473,6 @@ struct Operation
             case STX:
                 {
                     cpu.memory_.store(targetAddress, cpu.registers_.X);
-                    return false;
-                }
-            case SAX: // Unofficial
-                {
-                    uint8_t byte = cpu.registers_.A & cpu.registers_.X;
-                    cpu.memory_.store(targetAddress, byte);
                     return false;
                 }
             case STY:

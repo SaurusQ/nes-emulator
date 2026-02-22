@@ -10,7 +10,8 @@ RESET = "\033[0m"
 
 variable_mapping = {
     "SKB": "NOP",
-    "IGN": "NOP"
+    "IGN": "NOP",
+    "ISC": "ISB"
 }
 
 def compare_traces(truth_path, trace_path, skip_lines, limit):
@@ -45,9 +46,7 @@ def compare_traces(truth_path, trace_path, skip_lines, limit):
         alternative_name = None
         if max_len > 19 and truth_line[15] == '*' and trace_line[15] == '*':
             instruction_name = trace_line[16:19]
-            print(f"|{instruction_name}|")
             if instruction_name in variable_mapping:
-                print(variable_mapping[instruction_name])
                 alternative_name = trace_line[16:19]
                 trace_line = trace_line[:16] + variable_mapping[instruction_name] + trace_line[19:]
     
