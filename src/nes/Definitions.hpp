@@ -104,6 +104,8 @@ enum InstructionType
     SEC,
     SED,
     SEI,
+    SHX,
+    SHY,
     SKB,
     SLO,
     SRE,

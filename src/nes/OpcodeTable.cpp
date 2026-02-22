@@ -260,6 +260,9 @@ const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0xF8] = {Instruction<SED, IMPLICIT>::execute,     2};
         t[0x78] = {Instruction<SEI, IMPLICIT>::execute,     2};
 
+        t[0x9E] = {Instruction<SHX, ABSOLUTE_Y>::execute,    2}; // Unofficial
+        t[0x9C] = {Instruction<SHY, ABSOLUTE_X>::execute,    2}; // Unofficial
+
         t[0x80] = {Instruction<SKB, IMMEDIATE>::execute,    2}; // Unofficial
         t[0x82] = {Instruction<SKB, IMMEDIATE>::execute,    2}; // Unofficial
         t[0x89] = {Instruction<SKB, IMMEDIATE>::execute,    2}; // Unofficial
@@ -562,6 +565,9 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0x38] = {"SEC", IMPLICIT,     1};
         t[0xF8] = {"SED", IMPLICIT,     1};
         t[0x78] = {"SEI", IMPLICIT,     1};
+
+        t[0x9E] = {"*SHX", ABSOLUTE_Y,   3}; // Unofficial
+        t[0x9C] = {"*SHY", ABSOLUTE_X,   3}; // Unofficial
 
         t[0x80] = {"*SKB", IMMEDIATE,    2}; // Unofficial
         t[0x82] = {"*SKB", IMMEDIATE,    2}; // Unofficial

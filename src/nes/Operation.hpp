@@ -485,6 +485,16 @@ struct Operation
                     cpu.registers_.P.I = 0x01;
                     return false;
                 }
+            case SHX: // Unofficial
+                {
+                    throw std::runtime_error("SHX not implemented");
+                    return false;
+                }
+            case SHY: // Unofficial
+                {
+                    throw std::runtime_error("SHY not implemented");
+                    return false;
+                }
             case SLO: // Unofficial
                 {
                     cpu.registers_.P.C = mem & 0x80;
