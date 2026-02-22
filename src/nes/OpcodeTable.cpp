@@ -120,6 +120,13 @@ const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0xA1] = {Instruction<LDA, INDIRECT_X>::execute,   6};
         t[0xB1] = {Instruction<LDA, INDIRECT_Y>::execute,   5, 6};
 
+        t[0xA3] = {Instruction<LAX, INDIRECT_X>::execute,   6}; // Unofficial
+        t[0xA7] = {Instruction<LAX, ZERO_PAGE>::execute,    3}; // Unofficial
+        t[0xAF] = {Instruction<LAX, ABSOLUTE>::execute,     4}; // Unofficial
+        t[0xB3] = {Instruction<LAX, INDIRECT_Y>::execute,   5, 6}; // Unofficial
+        t[0xB7] = {Instruction<LAX, ZERO_PAGE_Y>::execute,  4}; // Unofficial
+        t[0xBF] = {Instruction<LAX, ABSOLUTE_Y>::execute,   4, 5}; // Unofficial
+
         t[0xA2] = {Instruction<LDX, IMMEDIATE>::execute,    2};
         t[0xA6] = {Instruction<LDX, ZERO_PAGE>::execute,    3};
         t[0xB6] = {Instruction<LDX, ZERO_PAGE_Y>::execute,  4};
@@ -223,6 +230,11 @@ const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0x86] = {Instruction<STX, ZERO_PAGE>::execute,    3};
         t[0x96] = {Instruction<STX, ZERO_PAGE_Y>::execute,  4};
         t[0x8E] = {Instruction<STX, ABSOLUTE>::execute,     4};
+
+        t[0x83] = {Instruction<SAX, INDIRECT_X>::execute,   6}; // Unofficial
+        t[0x87] = {Instruction<SAX, ZERO_PAGE>::execute,    3}; // Unofficial
+        t[0x8F] = {Instruction<SAX, ABSOLUTE>::execute,     4}; // Unofficial
+        t[0x97] = {Instruction<SAX, ZERO_PAGE_Y>::execute,  4}; // Unofficial
 
         t[0x84] = {Instruction<STY, ZERO_PAGE>::execute,    3};
         t[0x94] = {Instruction<STY, ZERO_PAGE_X>::execute,  4};
@@ -353,6 +365,13 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0xA1] = {"LDA", INDIRECT_X,   2};
         t[0xB1] = {"LDA", INDIRECT_Y,   2};
 
+        t[0xA3] = {"*LAX", INDIRECT_X,   2}; // Unofficial
+        t[0xA7] = {"*LAX", ZERO_PAGE,    2}; // Unofficial
+        t[0xAF] = {"*LAX", ABSOLUTE,     3}; // Unofficial
+        t[0xB3] = {"*LAX", INDIRECT_Y,   2}; // Unofficial
+        t[0xB7] = {"*LAX", ZERO_PAGE_Y,  2}; // Unofficial
+        t[0xBF] = {"*LAX", ABSOLUTE_Y,   3}; // Unofficial
+
         t[0xA2] = {"LDX", IMMEDIATE,    2};
         t[0xA6] = {"LDX", ZERO_PAGE,    2};
         t[0xB6] = {"LDX", ZERO_PAGE_Y,  2};
@@ -456,6 +475,11 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0x86] = {"STX", ZERO_PAGE,    2};
         t[0x96] = {"STX", ZERO_PAGE_Y,  2};
         t[0x8E] = {"STX", ABSOLUTE,     3};
+
+        t[0x83] = {"*SAX", INDIRECT_X,   2}; // Unofficial
+        t[0x87] = {"*SAX", ZERO_PAGE,    2}; // Unofficial
+        t[0x8F] = {"*SAX", ABSOLUTE,     3}; // Unofficial
+        t[0x97] = {"*SAX", ZERO_PAGE_Y,  2}; // Unofficial
 
         t[0x84] = {"STY", ZERO_PAGE,    2};
         t[0x94] = {"STY", ZERO_PAGE_X,  2};
