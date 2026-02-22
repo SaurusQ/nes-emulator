@@ -23,6 +23,11 @@ const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0x61] = {Instruction<ADC, INDIRECT_X>::execute,   6};
         t[0x71] = {Instruction<ADC, INDIRECT_Y>::execute,   5, 6};
 
+        t[0x4B] = {Instruction<ALR, IMMEDIATE>::execute,    2}; // Unofficial
+
+        t[0x0B] = {Instruction<ANC, IMMEDIATE>::execute,    2}; // Unofficial
+        t[0x2B] = {Instruction<ANC, IMMEDIATE>::execute,    2}; // Unofficial
+
         t[0x29] = {Instruction<AND, IMMEDIATE>::execute,    2};
         t[0x25] = {Instruction<AND, ZERO_PAGE>::execute,    3};
         t[0x35] = {Instruction<AND, ZERO_PAGE_X>::execute,  4};
@@ -31,6 +36,10 @@ const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0x39] = {Instruction<AND, ABSOLUTE_Y>::execute,   4, 5};
         t[0x21] = {Instruction<AND, INDIRECT_X>::execute,   6};
         t[0x31] = {Instruction<AND, INDIRECT_Y>::execute,   5, 6};
+
+        t[0x6B] = {Instruction<ARR, IMMEDIATE>::execute,    2}; // Unofficial
+
+        t[0xCB] = {Instruction<AXS, IMMEDIATE>::execute,    2}; // Unofficial
 
         t[0x0A] = {Instruction<ASL, ACCUMULATOR>::execute,  2};
         t[0x06] = {Instruction<ASL, ZERO_PAGE>::execute,    5};
@@ -317,6 +326,11 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0x61] = {"ADC", INDIRECT_X,   2};
         t[0x71] = {"ADC", INDIRECT_Y,   2};
 
+        t[0x4B] = {"*ALR", IMMEDIATE,    2}; // Unofficial
+
+        t[0x0B] = {"*ANC", IMMEDIATE,    2}; // Unofficial
+        t[0x2B] = {"*ANC", IMMEDIATE,    2}; // Unofficial
+
         t[0x29] = {"AND", IMMEDIATE,    2};
         t[0x25] = {"AND", ZERO_PAGE,    2};
         t[0x35] = {"AND", ZERO_PAGE_X,  2};
@@ -325,6 +339,10 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0x39] = {"AND", ABSOLUTE_Y,   3};
         t[0x21] = {"AND", INDIRECT_X,   2};
         t[0x31] = {"AND", INDIRECT_Y,   2};
+
+        t[0x6B] = {"*ARR", IMMEDIATE,    2}; // Unofficial
+
+        t[0xCB] = {"*AXS", IMMEDIATE,    2}; // Unofficial
 
         t[0x0A] = {"ASL", ACCUMULATOR,  1};
         t[0x06] = {"ASL", ZERO_PAGE,    2};

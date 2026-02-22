@@ -28,10 +28,49 @@ struct Operation
                     setZN(cpu.registers_.P, cpu.registers_.A);
                     return false;
                 }
+            case ALR: // Unofficial
+                {
+                    cpu.registers_.A &= mem;
+                    bool newCarry = mem & 0x01;
+                    mem >>= 1;
+                    cpu.registers_.P.C = newCarry;
+                    cpu.registers_.A = mem;
+                    setZN(cpu.registers_.P, mem);
+                    return false;
+                }
+            case ANC: // Unofficial
+                {
+                    cpu.registers_.A &= mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    cpu.registers_.P.C = cpu.registers_.P.N;
+                    return false;
+                }
             case AND:
                 {
                     cpu.registers_.A &= mem;
                     setZN(cpu.registers_.P, cpu.registers_.A);
+                    return false;
+                }
+            case ARR: // Unofficial
+                {
+                    cpu.registers_.A &= mem;
+                    mem >>= 1;
+                    mem |= cpu.registers_.P.C << 7;
+                    cpu.registers_.A = mem;
+                    setZN(cpu.registers_.P, cpu.registers_.A);
+                    cpu.registers_.P.C = (mem >> 6) & 0x01;
+                    uint8_t bit6 = (mem >> 6) & 0x01;
+                    uint8_t bit5 = (mem >> 5) & 0x01;
+                    cpu.registers_.P.V = bit6 ^ bit5;
+                    return false;
+                }
+            case AXS: // Unofficial
+                {
+                    uint16_t res = cpu.registers_.A & cpu.registers_.X;
+                    res = res - (uint16_t)mem;
+                    cpu.registers_.X = static_cast<uint8_t>(res & 0xFF);
+                    setZN(cpu.registers_.P, cpu.registers_.X);
+                    cpu.registers_.P.C = (res >= mem);
                     return false;
                 }
             case ASL:

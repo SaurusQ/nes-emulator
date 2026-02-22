@@ -47,7 +47,11 @@ enum AddressingMode
 enum InstructionType
 {
     ADC,
+    ALR,
+    ANC,
     AND,
+    ARR,
+    AXS,
     ASL,
     BCC,
     BCS,
