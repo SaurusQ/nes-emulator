@@ -214,6 +214,7 @@ const std::array<InstructionData, 256>& getOpcodeTable() {
         t[0xF9] = {Instruction<SBC, ABSOLUTE_Y>::execute,   4, 5};
         t[0xE1] = {Instruction<SBC, INDIRECT_X>::execute,   6};
         t[0xF1] = {Instruction<SBC, INDIRECT_Y>::execute,   5, 6};
+        t[0xEB] = {Instruction<SBC, IMMEDIATE>::execute,    2}; // Unofficial
         
         t[0x38] = {Instruction<SEC, IMPLICIT>::execute,     2};
         t[0xF8] = {Instruction<SED, IMPLICIT>::execute,     2};
@@ -459,6 +460,7 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0xF9] = {"SBC", ABSOLUTE_Y,   3};
         t[0xE1] = {"SBC", INDIRECT_X,   2};
         t[0xF1] = {"SBC", INDIRECT_Y,   2};
+        t[0xEB] = {"*SBC", IMMEDIATE,    2}; // Unofficial
 
         t[0x38] = {"SEC", IMPLICIT,     1};
         t[0xF8] = {"SED", IMPLICIT,     1};

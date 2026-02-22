@@ -245,7 +245,7 @@ struct Operation
                     setZN(cpu.registers_.P, cpu.registers_.A);
                     return false;
                 }
-            case LAX:
+            case LAX: // Unofficial
                 {
                     cpu.registers_.A = mem;
                     cpu.registers_.X = cpu.registers_.A;
@@ -397,7 +397,7 @@ struct Operation
                     cpu.memory_.store(targetAddress, cpu.registers_.X);
                     return false;
                 }
-            case SAX:
+            case SAX: // Unofficial
                 {
                     uint8_t byte = cpu.registers_.A & cpu.registers_.X;
                     cpu.memory_.store(targetAddress, byte);
