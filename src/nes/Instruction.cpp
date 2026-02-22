@@ -6,10 +6,12 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <cstring>
 
 std:: string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, const Memory& memory)
 {
     std::ostringstream oss;
+    if (std::strlen(info.name) == 3) oss << " ";
     oss << std::hex << std::uppercase << info.name;
 
     uint8_t* memoryPtr = memory.getMemoryPtr() + address + 1; // Skip opcode
@@ -62,7 +64,7 @@ std:: string InstructionHelper::getInstructionString(const InstructionInfo& info
     }
 
     std::string s = oss.str();
-    size_t pad = 32 - s.size();
+    size_t pad = 33 - s.size();
 
     return s.append(pad, ' ');
 }

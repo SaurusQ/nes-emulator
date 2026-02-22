@@ -8,6 +8,11 @@ skip_trace_lines_start = 0
 RED = "\033[31m"
 RESET = "\033[0m"
 
+variable_mapping = {
+    "SKB": "NOP",
+    "IGN": "NOP"
+}
+
 def compare_traces(truth_path, trace_path, skip_lines, limit):
 
     truth = open(truth_path, "r")
@@ -20,6 +25,7 @@ def compare_traces(truth_path, trace_path, skip_lines, limit):
     start_diff = False
     first_diff = True
     previous_line = None
+
     while limit != 0:
         truth_line = truth.readline()
         trace_line = trace.readline()
@@ -35,19 +41,37 @@ def compare_traces(truth_path, trace_path, skip_lines, limit):
         line_display = ""
 
         max_len = min(len(truth_line), len(trace_line))
+
+        alternative_name = None
+        if max_len > 19 and truth_line[15] == '*' and trace_line[15] == '*':
+            instruction_name = trace_line[16:19]
+            print(f"|{instruction_name}|")
+            if instruction_name in variable_mapping:
+                print(variable_mapping[instruction_name])
+                alternative_name = trace_line[16:19]
+                trace_line = trace_line[:16] + variable_mapping[instruction_name] + trace_line[19:]
+    
         for i in range(max_len):
+
             if i in range(19, 48):
-                line_display += truth_line[i]
+                line_display += trace_line[i]
                 continue
 
             if truth_line[i] == trace_line[i]:
                 line_display += truth_line[i]
                 continue
-
+            
             start_diff = True
             line_display += f"{RED}{trace_line[i]}{RESET}"
 
         line = f"{line_num:3}: {line_display}"
+        if alternative_name:
+            line += f" ({alternative_name})"
+        else:
+            line += " " * 6
+
+        line += "|| " + truth_line
+
         if start_diff or not skip_lines:
             if first_diff and skip_lines:
                 print(previous_line)

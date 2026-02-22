@@ -372,36 +372,36 @@ const std::array<InstructionInfo, 256>& getOpcodeInfoTable() {
         t[0x5E] = {"LSR", ABSOLUTE_X,   3};
 
         t[0xEA] = {"NOP", IMPLICIT,     1};
-        t[0x1A] = {"NOP", IMPLICIT,     1}; // Unofficial
-        t[0x3A] = {"NOP", IMPLICIT,     1}; // Unofficial
-        t[0x5A] = {"NOP", IMPLICIT,     1}; // Unofficial
-        t[0x7A] = {"NOP", IMPLICIT,     1}; // Unofficial
-        t[0xDA] = {"NOP", IMPLICIT,     1}; // Unofficial
-        t[0xFA] = {"NOP", IMPLICIT,     1}; // Unofficial
+        t[0x1A] = {"*NOP", IMPLICIT,     1}; // Unofficial
+        t[0x3A] = {"*NOP", IMPLICIT,     1}; // Unofficial
+        t[0x5A] = {"*NOP", IMPLICIT,     1}; // Unofficial
+        t[0x7A] = {"*NOP", IMPLICIT,     1}; // Unofficial
+        t[0xDA] = {"*NOP", IMPLICIT,     1}; // Unofficial
+        t[0xFA] = {"*NOP", IMPLICIT,     1}; // Unofficial
 
-        t[0x80] = {"SKB", IMMEDIATE,    2}; // Unofficial
-        t[0x82] = {"SKB", IMMEDIATE,    2}; // Unofficial
-        t[0x89] = {"SKB", IMMEDIATE,    2}; // Unofficial
-        t[0xC2] = {"SKB", IMMEDIATE,    2}; // Unofficial
-        t[0xE2] = {"SKB", IMMEDIATE,    2}; // Unofficial
+        t[0x80] = {"*SKB", IMMEDIATE,    2}; // Unofficial
+        t[0x82] = {"*SKB", IMMEDIATE,    2}; // Unofficial
+        t[0x89] = {"*SKB", IMMEDIATE,    2}; // Unofficial
+        t[0xC2] = {"*SKB", IMMEDIATE,    2}; // Unofficial
+        t[0xE2] = {"*SKB", IMMEDIATE,    2}; // Unofficial
         
-        t[0x0C] = {"IGN", ABSOLUTE,     3}; // Unofficial
-        t[0x1C] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
-        t[0x3C] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
-        t[0x5C] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
-        t[0x7C] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
-        t[0xDC] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
-        t[0xFC] = {"IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0x0C] = {"*IGN", ABSOLUTE,     3}; // Unofficial
+        t[0x1C] = {"*IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0x3C] = {"*IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0x5C] = {"*IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0x7C] = {"*IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0xDC] = {"*IGN", ABSOLUTE_X,   3}; // Unofficial
+        t[0xFC] = {"*IGN", ABSOLUTE_X,   3}; // Unofficial
 
-        t[0x04] = {"IGN", ZERO_PAGE,    2}; // Unofficial
-        t[0x44] = {"IGN", ZERO_PAGE,    2}; // Unofficial
-        t[0x64] = {"IGN", ZERO_PAGE,    2}; // Unofficial
-        t[0x14] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
-        t[0x34] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
-        t[0x54] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
-        t[0x74] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
-        t[0xD4] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
-        t[0xF4] = {"IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0x04] = {"*IGN", ZERO_PAGE,    2}; // Unofficial
+        t[0x44] = {"*IGN", ZERO_PAGE,    2}; // Unofficial
+        t[0x64] = {"*IGN", ZERO_PAGE,    2}; // Unofficial
+        t[0x14] = {"*IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0x34] = {"*IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0x54] = {"*IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0x74] = {"*IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0xD4] = {"*IGN", ZERO_PAGE_X,  2}; // Unofficial
+        t[0xF4] = {"*IGN", ZERO_PAGE_X,  2}; // Unofficial
 
         t[0x09] = {"ORA", IMMEDIATE,    2};
         t[0x05] = {"ORA", ZERO_PAGE,    2};
