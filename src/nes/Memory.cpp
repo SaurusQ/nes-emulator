@@ -1,7 +1,7 @@
 #include "Memory.hpp"
 
 #include <memory>
-#include <cstring>
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -12,14 +12,9 @@ constexpr size_t MEMORY_SIZE = 0x010000;
 Memory::Memory()
 {
     memory_ = std::make_unique<uint8_t[]>(MEMORY_SIZE);
-    std::memset(memory_.get(), 0xEA, MEMORY_SIZE); // Fill with NOP
+    std::fill(memory_.get(), memory_.get() + MEMORY_SIZE, 0xEA); // Fill with NOP
 
     std::cout << "Memory initialized" << std::endl;
-}
-
-Memory::~Memory()
-{
-
 }
 
 void Memory::loadData(uint16_t startAddress, const uint8_t* data, size_t size)
@@ -30,7 +25,7 @@ void Memory::loadData(uint16_t startAddress, const uint8_t* data, size_t size)
         return;
     }
 
-    std::memcpy(memory_.get() + startAddress, data, size);
+    std::copy(data, data + size, memory_.get() + startAddress);
 }
 
 void Memory::read(uint16_t address, uint8_t& data) const

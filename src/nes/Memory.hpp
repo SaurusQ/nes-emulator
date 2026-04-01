@@ -11,7 +11,7 @@ class Memory
     friend class Instruction;
     public:
         Memory();
-        ~Memory();
+        ~Memory() = default;
         
         void loadData(uint16_t startAddress, const uint8_t* programData, size_t size);
 

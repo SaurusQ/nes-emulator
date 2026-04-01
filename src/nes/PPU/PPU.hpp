@@ -3,16 +3,33 @@
 #include "Registers.hpp"
 
 #include <cstdint>
+#include <vector>
 
-class PPU
+namespace PPU
 {
-    public:
-        PPU();
-        ~PPU();
+    struct Pixel
+    {
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+    };
 
-    private:
-        uint16_t getBaseNameTableAddress();
-        uint16_t getSpritePatternTableAddress();
+    class PPU
+    {
+        public:
+            PPU();
+            ~PPU() = default;
 
-        Registers reg_;
-};
+            void reset();
+            void tick();
+
+        private:
+            uint16_t getBaseNameTableAddress();
+            uint16_t getSpritePatternTableAddress();
+    
+            Registers reg_;
+            uint64_t cycle_ = 0;
+            uint16_t dot_ = 0;
+            std::vector<Pixel> screenBuffer_;
+    };
+}

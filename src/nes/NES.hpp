@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CPU.hpp"
-#include "PPU.hpp"
+#include "PPU/PPU.hpp"
 #include "Memory.hpp"
 
 class NES
