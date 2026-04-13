@@ -3,6 +3,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
+#include "NES/PPU/Definitions.hpp"
+
 #include <string>
 #include <vector>
 
@@ -25,6 +27,7 @@ class DrawHandler
         void drawFrame();
         std::pair<int , int> drawText(std::string text, int x, int y, bool highlightFirst = false);
         void drawStatusRegister(uint8_t statusRegister, int x, int y);
+        void drawPPU(const std::vector<PPU::Pixel>& screenBuffer, const SDL_FRect& dst);
     
     private:
         void createCharacterTextures(std::string text, SDL_Color textColor, std::vector<SDL_Texture*>& output);
@@ -37,4 +40,6 @@ class DrawHandler
         SDL_Color highlightColor_            = makeColor(0x00F0FF);
 
         std::vector<SDL_Texture*> statusRegisterSymbols;
+
+        SDL_Texture* screenBufferTexture_;
 };

@@ -1,8 +1,8 @@
 
 #include "EventHandler.hpp"
 #include "DrawHandler.hpp"
-#include "nes/Instruction.hpp"
-#include "nes/NES.hpp"
+#include "NES/Instruction.hpp"
+#include "NES/NES.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
     NES nes;
     nes.powerOn();
     nes.loadDotNESDirectToMemory("./program/nestest.nes");
-    nes.getCpu().startTrace();
+    nes.getCPU().startTrace();
 
     constexpr int statusPanelX = 10;
     constexpr int statusPanelY =  10;
@@ -87,10 +87,10 @@ int main(int argc, char* argv[])
         }
 
         memoryStr = nes.getMemory().getMemoryRegionStr(eventHandler.memoryPointer, 8 * 16);
-        registerStr = nes.getCpu().getRegisterStatusStr(statusRegister);
-        if (nes.getCpu().nextInstruction())
+        registerStr = nes.getCPU().getRegisterStatusStr(statusRegister);
+        if (nes.getCPU().nextInstruction())
         {
-            instructionStr = InstructionHelper::getInstructionListString(nes.getCpu().getCurrentAddress(), nes.getMemory(), 3);
+            instructionStr = InstructionHelper::getInstructionListString(nes.getCPU().getCurrentAddress(), nes.getMemory(), 3);
         }
         
 
@@ -102,13 +102,15 @@ int main(int argc, char* argv[])
         eventHandler.setMemoryScrollArea(statusPanelX, statusPanelY, previousBottomX, previousBottomY);
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(registerStr, statusPanelX, previousBottomY + 20);
         drawHandler.drawStatusRegister(statusRegister, statusPanelX + 150, statusRegisterY + 20);
-        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(nes.getCpu().getCurrentCycleStr(), statusPanelX, previousBottomY + 10);
+        std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(nes.getCPU().getCurrentCycleStr(), statusPanelX, previousBottomY + 10);
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(instructionStr, statusPanelX, previousBottomY + 20, true);
+
+        drawHandler.drawPPU(nes.getPPU().getScreenBuffer(), {600.0f, 10.0f, 4.3f*283.0f, 4.3f*242.0f});
 
         SDL_RenderPresent(renderer);
     }
 
-    nes.getCpu().stopTrace();
+    nes.getCPU().stopTrace();
 
     SDL_DestroyWindow(window);
     SDL_Quit();

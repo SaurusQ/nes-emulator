@@ -13,6 +13,11 @@ DrawHandler::DrawHandler(SDL_Renderer* renderer)
     }
 
     createCharacterTextures("NV-BDIZC", fontColor_, statusRegisterSymbols);
+
+    screenBufferTexture_ = SDL_CreateTexture(renderer_, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 283, 242);
+    if (!screenBufferTexture_) {
+        SDL_Log("Failed to create screen buffer texture: %s", SDL_GetError());
+    }
 }
 
 DrawHandler::~DrawHandler()
@@ -98,6 +103,18 @@ void DrawHandler::drawStatusRegister(uint8_t statusRegister, int x, int y)
         }
         SDL_RenderTexture(renderer_, texture, nullptr, &dst);
     }
+}
+
+void DrawHandler::drawPPU(const std::vector<PPU::Pixel>& screenBuffer, const SDL_FRect& dst)
+{
+    SDL_UpdateTexture(
+        screenBufferTexture_,
+        NULL,
+        screenBuffer.data(),
+        283 * sizeof(PPU::Pixel)
+    );
+
+    SDL_RenderTexture(renderer_, screenBufferTexture_, NULL, &dst);
 }
 
 void DrawHandler::createCharacterTextures(std::string text, SDL_Color textColor, std::vector<SDL_Texture*>& output)

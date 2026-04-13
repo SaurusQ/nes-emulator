@@ -17,6 +17,7 @@ namespace PPU
         reg_.internal.w     = 0;
     
         screenBuffer_.resize(283 * 242);
+        std::fill(screenBuffer_.begin(), screenBuffer_.end(), Pixel{100, 0, 0});
     }
     
     void PPU::reset()

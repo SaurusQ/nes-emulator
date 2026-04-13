@@ -1,19 +1,13 @@
 #pragma once
 
 #include "Registers.hpp"
+#include "Definitions.hpp"
 
 #include <cstdint>
 #include <vector>
 
 namespace PPU
 {
-    struct Pixel
-    {
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-    };
-
     class PPU
     {
         public:
@@ -22,6 +16,10 @@ namespace PPU
 
             void reset();
             void tick();
+
+            void copyScreenBuffer(std::vector<Pixel>& dst) const { dst = screenBuffer_; }
+            std::vector<Pixel> getScreenBuffer() const { return screenBuffer_; }
+        
 
         private:
             uint16_t getBaseNameTableAddress();

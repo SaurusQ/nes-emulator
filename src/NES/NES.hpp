@@ -16,11 +16,13 @@ class NES
 
         void loadDotNESDirectToMemory(const char* filename);
 
-        const CPU& getCpu() const { return cpu_; }
+        const CPU& getCPU() const { return cpu_; }
+        const PPU::PPU& getPPU() const { return ppu_; }
         const Memory& getMemory() const { return memory_; }
 
     private:
 
         Memory memory_;
-        CPU cpu_;    
+        CPU cpu_;
+        PPU::PPU ppu_;
 };
