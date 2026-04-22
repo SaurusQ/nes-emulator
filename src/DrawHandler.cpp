@@ -18,12 +18,26 @@ DrawHandler::DrawHandler(SDL_Renderer* renderer)
     if (!screenBufferTexture_) {
         SDL_Log("Failed to create screen buffer texture: %s", SDL_GetError());
     }
+    patternTableTexture_ = SDL_CreateTexture(renderer_, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 256, 128);
+    if (!patternTableTexture_) {
+        SDL_Log("Failed to create pattern table texture: %s", SDL_GetError());
+    }
 }
 
 DrawHandler::~DrawHandler()
 {
-    if (font_) {
+    if (font_)
+    {
         TTF_CloseFont(font_);
+    }
+
+    if (screenBufferTexture_)
+    {
+        SDL_DestroyTexture(screenBufferTexture_);
+    }
+    if (patternTableTexture_)
+    {
+        SDL_DestroyTexture(patternTableTexture_);
     }
 }
 
@@ -115,6 +129,25 @@ void DrawHandler::drawPPU(const std::vector<PPU::Pixel>& screenBuffer, const SDL
     );
 
     SDL_RenderTexture(renderer_, screenBufferTexture_, NULL, &dst);
+}
+
+void DrawHandler::drawPatternTable(const uint8_t* patternTable, const SDL_FRect& dst)
+{
+    std::vector<PPU::Pixel> screenBuffer(256 * 128);
+    for (int i = 0; i < 256; i++) {
+        for (int j = 0; j < 128; j++) {
+            screenBuffer[i * 128 + j] = PPU::Pixel{ patternTable[i * 128 + j], 0xFF };
+        }
+    }
+
+    SDL_UpdateTexture(
+        patternTableTexture_,
+        NULL,
+        screenBuffer.data(),
+        256 * sizeof(PPU::Pixel)
+    );
+
+    SDL_RenderTexture(renderer_, patternTableTexture_, NULL, &dst);
 }
 
 void DrawHandler::createCharacterTextures(std::string text, SDL_Color textColor, std::vector<SDL_Texture*>& output)

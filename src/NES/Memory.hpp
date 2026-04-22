@@ -24,6 +24,8 @@ class Memory
 
         uint8_t* getMemoryPtr() const { return memory_.get(); }
 
+        const uint8_t* getPatternTable() const { return memory_.get() + 0x1000; }
+
     private:
         std::unique_ptr<uint8_t[]> memory_;
 };

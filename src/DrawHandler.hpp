@@ -28,6 +28,7 @@ class DrawHandler
         std::pair<int , int> drawText(std::string text, int x, int y, bool highlightFirst = false);
         void drawStatusRegister(uint8_t statusRegister, int x, int y);
         void drawPPU(const std::vector<PPU::Pixel>& screenBuffer, const SDL_FRect& dst);
+        void drawPatternTable(const uint8_t* patternTable, const SDL_FRect& dst);
     
     private:
         void createCharacterTextures(std::string text, SDL_Color textColor, std::vector<SDL_Texture*>& output);
@@ -42,4 +43,6 @@ class DrawHandler
         std::vector<SDL_Texture*> statusRegisterSymbols;
 
         SDL_Texture* screenBufferTexture_;
+        SDL_Texture* patternTableTexture_;
+
 };
