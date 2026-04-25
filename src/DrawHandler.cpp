@@ -18,7 +18,7 @@ DrawHandler::DrawHandler(SDL_Renderer* renderer)
     if (!screenBufferTexture_) {
         SDL_Log("Failed to create screen buffer texture: %s", SDL_GetError());
     }
-    patternTableTexture_ = SDL_CreateTexture(renderer_, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 256, 128);
+    patternTableTexture_ = SDL_CreateTexture(renderer_, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 8 * 16 * 2, 8 * 16);
     if (!patternTableTexture_) {
         SDL_Log("Failed to create pattern table texture: %s", SDL_GetError());
     }
@@ -133,18 +133,49 @@ void DrawHandler::drawPPU(const std::vector<PPU::Pixel>& screenBuffer, const SDL
 
 void DrawHandler::drawPatternTable(const uint8_t* patternTable, const SDL_FRect& dst)
 {
-    std::vector<PPU::Pixel> screenBuffer(256 * 128);
-    for (int i = 0; i < 256; i++) {
-        for (int j = 0; j < 128; j++) {
-            screenBuffer[i * 128 + j] = PPU::Pixel{ patternTable[i * 128 + j], 0xFF };
+    const int texWidth = 256;
+    const int texHeight = 128;
+
+    static std::vector<SDL_Color> viewBuffer(texWidth * texHeight);
+
+    const SDL_Color palette[4] = {
+        { 0,   0,   0,   255 }, // Index 0: Transparent/Black
+        { 85,  85,  85,  255 }, // Index 1: Light Gray
+        { 170, 170, 170, 255 }, // Index 2: Dark Gray
+        { 255, 255, 255, 255 }  // Index 3: White
+    };
+
+    for (int table = 0; table < 2; table++) {
+        int tableOffset = table * 0x1000;
+        int renderXOffset = table * 128;
+
+        for (int spriteX = 0; spriteX < 16; spriteX++) {
+            for (int spriteY = 0; spriteY < 16; spriteY++) {
+                int dataPtr = tableOffset + spriteX * 8 + spriteY * 8 * 16;
+
+                for (int tileY = 0; tileY < 8; tileY++) {
+                    int lowPlane  = patternTable[dataPtr + tileY];
+                    int highPlane = patternTable[dataPtr + tileY + 8];
+                    for (int tileX = 0; tileX < 8; tileX++) {
+                        const SDL_Color& color = palette[
+                            ((lowPlane  >> (7 - tileX)) & 0x01) | 
+                           (((highPlane >> (7 - tileX)) & 0x01) << 1)
+                        ];
+                        int pixelX = renderXOffset + (spriteX * 8) + tileX;
+                        int pixelY = (spriteY * 8) + tileY;
+                        viewBuffer[pixelY * texWidth + pixelX] = color;
+                    }
+                }
+            }
         }
     }
+
 
     SDL_UpdateTexture(
         patternTableTexture_,
         NULL,
-        screenBuffer.data(),
-        256 * sizeof(PPU::Pixel)
+        viewBuffer.data(),
+        sizeof(SDL_Color) * texWidth
     );
 
     SDL_RenderTexture(renderer_, patternTableTexture_, NULL, &dst);

@@ -105,8 +105,8 @@ int main(int argc, char* argv[])
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(nes.getCPU().getCurrentCycleStr(), statusPanelX, previousBottomY + 10);
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(instructionStr, statusPanelX, previousBottomY + 20, true);
 
-        drawHandler.drawPPU(nes.getPPU().getScreenBuffer(), {600.0f, 10.0f, 4.3f*283.0f, 4.3f*242.0f});
-        drawHandler.drawPatternTable(nes.getMemory().getPatternTable(), {600.0f, 10.0f, 4.3f*256.0f, 4.3f*128.0f});
+        //drawHandler.drawPPU(nes.getPPU().getScreenBuffer(), {600.0f, 10.0f, 4.3f*283.0f, 4.3f*242.0f});
+        drawHandler.drawPatternTable(nes.getPPU().getPatternTableAddress(), {600.0f, 10.0f, 4.3f*256.0f, 4.3f*128.0f});
 
 
         SDL_RenderPresent(renderer);
