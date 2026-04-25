@@ -8,8 +8,7 @@
 #include <bitset>
 #include <sstream>
 
-CPU::CPU(Memory& memory)
-    : memory_(memory)
+CPU::CPU()
 {
     //registers_.PC   = 0xFFFC;
     registers_.PC   = 0xC000;

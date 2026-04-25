@@ -1,8 +1,7 @@
 #pragma once
 
-#include "CPU.hpp"
+#include "CPU/CPU.hpp"
 #include "PPU/PPU.hpp"
-#include "Memory.hpp"
 
 class NES
 {
@@ -18,11 +17,8 @@ class NES
 
         const CPU& getCPU() const { return cpu_; }
         const PPU::PPU& getPPU() const { return ppu_; }
-        const Memory& getMemory() const { return memory_; }
 
     private:
-
-        Memory memory_;
         CPU cpu_;
         PPU::PPU ppu_;
 };

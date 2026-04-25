@@ -7,7 +7,7 @@
 #include <vector>
 #include <iomanip>
 
-NES::NES() : cpu_(memory_)
+NES::NES()
 {
 
 }
@@ -56,6 +56,5 @@ void NES::loadDotNESDirectToMemory(const char* filename)
 
     std::vector<uint8_t> programDataWithoutHeader(programData.begin() + 16, programData.end());
 
-    memory_.loadData(0xC000, programDataWithoutHeader.data(), PRG_ROM_SIZE);    
-    
+    cpu_.getMemory().loadData(0xC000, programDataWithoutHeader.data(), PRG_ROM_SIZE);
 }

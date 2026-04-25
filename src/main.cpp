@@ -1,7 +1,7 @@
 
 #include "EventHandler.hpp"
 #include "DrawHandler.hpp"
-#include "NES/Instruction.hpp"
+#include "NES/CPU/Instruction.hpp"
 #include "NES/NES.hpp"
 
 #include <SDL3/SDL.h>
@@ -86,11 +86,11 @@ int main(int argc, char* argv[])
             lastTime = currentTime;
         }
 
-        memoryStr = nes.getMemory().getMemoryRegionStr(eventHandler.memoryPointer, 8 * 16);
+        memoryStr = nes.getCPU().getMemory().getMemoryRegionStr(eventHandler.memoryPointer, 8 * 16);
         registerStr = nes.getCPU().getRegisterStatusStr(statusRegister);
         if (nes.getCPU().nextInstruction())
         {
-            instructionStr = InstructionHelper::getInstructionListString(nes.getCPU().getCurrentAddress(), nes.getMemory(), 3);
+            instructionStr = InstructionHelper::getInstructionListString(nes.getCPU().getCurrentAddress(), nes.getCPU().getMemory(), 3);
         }
         
 

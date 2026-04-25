@@ -40,7 +40,7 @@ class CPU
     template<InstructionType IT, AddressingMode AM>
     friend class Operation;
     public:
-        CPU(Memory& memory);
+        CPU();
         ~CPU();
         void resetRegisters();
         void clockTick();
@@ -57,11 +57,15 @@ class CPU
         std::string getCurrentCycleStr() const { return "Cycles: " + std::to_string(cycle_); }
         uint16_t getCurrentAddress() const { return registers_.PC; }
         bool nextInstruction() const { return insCyclesToExecute_ == 0; }
+
+        Memory& getMemory() { return memory_; }
+        const Memory& getMemory() const { return memory_; }
+
     private:
         std::string getRegisterStatusStr(bool renderVersion) const;
 
         Registers registers_;
-        Memory& memory_;
+        Memory memory_;
         uint64_t cycle_ = 0;
         uint64_t insCyclesToExecute_ = 0;
 
