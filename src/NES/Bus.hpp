@@ -14,9 +14,9 @@ class Bus
         ~Bus() = default;
 
         template<Addressspace AS>
-        void read();
+        void read(uint16_t address, uint8_t& data);
         template<Addressspace AS>
-        void write();
+        void write(uint16_t address, uint8_t data);
 
     private:
         CPU::CPU& cpu_;

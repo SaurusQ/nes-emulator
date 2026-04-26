@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Definitions.hpp"
-#include "Memory.hpp"
+#include "RAM.hpp"
 
 #include <cstdint>
 #include <fstream>
@@ -60,14 +60,14 @@ namespace CPU
             uint16_t getCurrentAddress() const { return registers_.PC; }
             bool nextInstruction() const { return insCyclesToExecute_ == 0; }
     
-            Memory& getMemory() { return memory_; }
-            const Memory& getMemory() const { return memory_; }
+            RAM getRAMmutable() { return ram_; }
+            const RAM& getRAM() const { return ram_; }
     
         private:
             std::string getRegisterStatusStr(bool renderVersion) const;
     
             Registers registers_;
-            Memory memory_;
+            RAM ram_;
             uint64_t cycle_ = 0;
             uint64_t insCyclesToExecute_ = 0;
     
