@@ -7,7 +7,7 @@
 
 class Memory
 {
-    template<InstructionType IT, AddressingMode AM>
+    template<CPU::InstructionType IT, CPU::AddressingMode AM>
     friend class Instruction;
     public:
         Memory();
