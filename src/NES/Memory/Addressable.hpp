@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 class Addressable
 {
@@ -12,7 +13,7 @@ class Addressable
 
         virtual void read(uint16_t address, uint8_t& data) const { data = this->getMemoryPtr()[address]; }
         virtual void store(uint16_t address, uint8_t data) { this->getMemoryPtr()[address] = data; }
-        virtual size_t size() const;
+        virtual size_t size() const = 0;
         virtual inline const uint8_t* getMemoryPtr() const { return this->getMemoryPtr(); }
         std::string getMemoryRegionStr(uint16_t address, size_t size) const
         {
@@ -32,5 +33,5 @@ class Addressable
             return oss.str();
         }
     protected:
-        virtual inline uint8_t* getMemoryPtr();
+        virtual inline uint8_t* getMemoryPtr() = 0;
 };

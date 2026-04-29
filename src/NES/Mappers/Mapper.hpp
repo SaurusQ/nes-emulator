@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Memory/RAM.hpp"
+
 #include <cstdint>
 
 template<auto... T> inline constexpr bool dependent_false = false;
@@ -56,6 +58,8 @@ class Mapper
         void readCPU(uint16_t address, uint8_t& data) const;
         void readPPU(uint16_t address, uint8_t& data) const;
 
+        const RAM& getRAM() const { return ram_; }
+
     private:
-        
+        RAM ram_;
 };

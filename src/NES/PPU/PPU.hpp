@@ -28,7 +28,7 @@ namespace PPU
             // Addressable
             size_t size() const { return 8; }
         protected:
-            inline uint8_t* getMemoryPtr() { reinterpret_cast<const uint8_t*>(&reg_); }
+            inline uint8_t* getMemoryPtr() { return reinterpret_cast<uint8_t*>(&reg_); }
         private:
             uint16_t getBaseNameTableAddress();
             uint16_t getSpritePatternTableAddress();

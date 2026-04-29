@@ -8,6 +8,8 @@
 #include <iomanip>
 
 NES::NES()
+    : cpu_(mapper_)
+    , ppu_(mapper_)
 {
 
 }
@@ -56,5 +58,5 @@ void NES::loadDotNESDirectToMemory(const char* filename)
 
     std::vector<uint8_t> programDataWithoutHeader(programData.begin() + 16, programData.end());
 
-    cpu_.getMemory().loadData(0xC000, programDataWithoutHeader.data(), PRG_ROM_SIZE);
+    // TODO cpu_.getMemory().loadData(0xC000, programDataWithoutHeader.data(), PRG_ROM_SIZE);
 }

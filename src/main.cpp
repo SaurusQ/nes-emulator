@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
             lastTime = currentTime;
         }
 
-        memoryStr = nes.getCPU().getMemory().getMemoryRegionStr(eventHandler.memoryPointer, 8 * 16);
+        memoryStr = nes.getMapper().getRAM().getMemoryRegionStr(eventHandler.memoryPointer, 8 * 16);
         registerStr = nes.getCPU().getRegisterStatusStr(statusRegister);
         if (nes.getCPU().nextInstruction())
         {

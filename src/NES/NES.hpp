@@ -17,6 +17,7 @@ class NES
 
         const CPU::CPU& getCPU() const { return cpu_; }
         const PPU::PPU& getPPU() const { return ppu_; }
+        const Mapper& getMapper() const { return mapper_; }
 
     private:
         CPU::CPU cpu_;
