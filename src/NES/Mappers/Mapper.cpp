@@ -5,7 +5,7 @@ Mapper::Mapper()
 
 }
 
-void Mapper::readCPU(uint16_t address, uint8_t& data)
+void Mapper::readCPU(uint16_t address, uint8_t& data) const
 {
     if (address < 0x2000) // RAM
     {
@@ -25,7 +25,7 @@ void Mapper::readCPU(uint16_t address, uint8_t& data)
     }
 }
 
-void Mapper::readPPU(uint16_t address, uint8_t& data)
+void Mapper::readPPU(uint16_t address, uint8_t& data) const
 {
 
 }

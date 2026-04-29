@@ -15,8 +15,8 @@ file(GLOB_RECURSE SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
-add_subdirectory(lib/SDL EXCLUDE_FROM_ALL)
-add_subdirectory(lib/SDL_ttf EXCLUDE_FROM_ALL)
+add_subdirectory(lib/SDL ${CMAKE_BINARY_DIR}/build_deps/SDL EXCLUDE_FROM_ALL)
+add_subdirectory(lib/SDL_ttf ${CMAKE_BINARY_DIR}/build_deps/SDL_ttf EXCLUDE_FROM_ALL)
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
