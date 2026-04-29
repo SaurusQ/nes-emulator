@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Definitions.hpp"
-
 #include <cstdint>
+
+template<auto... T> inline constexpr bool dependent_false = false;
 
 enum class Addressspace
 {
@@ -10,7 +10,11 @@ enum class Addressspace
     PPU,
     UNK
 };
-
+namespace AS
+{
+    constexpr Addressspace CPU = Addressspace::CPU;
+    constexpr Addressspace PPU = Addressspace::PPU;
+}
 
 class Mapper
 {
@@ -33,24 +37,24 @@ class Mapper
             }
         };
         template<Addressspace AS>
-        void write(uint16_t address, uint8_t data)
+        void store(uint16_t address, uint8_t data)
         {
             if constexpr (AS == Addressspace::CPU)
             {
-                this->writeCPU(address, data);
+                this->storeCPU(address, data);
             } else if constexpr (AS == Addressspace::PPU)
             {
-                this->readPPU(address, data);
+                this->storePPU(address, data);
             }
             else {
                 static_assert(dependent_false<AS>, "Invalid address space for write operation");
             }
         };
 
-        void writeCPU(uint16_t address, uint8_t data);
-        void writePPU(uint16_t address, uint8_t data);
-        void readCPU(uint16_t address, uint8_t& data);
-        void readPPU(uint16_t address, uint8_t& data);
+        void storeCPU(uint16_t address, uint8_t data);
+        void storePPU(uint16_t address, uint8_t data);
+        void readCPU(uint16_t address, uint8_t& data) const;
+        void readPPU(uint16_t address, uint8_t& data) const;
 
     private:
         

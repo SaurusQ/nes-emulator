@@ -2,8 +2,8 @@
 
 #include <cstdint>
 
-namespace PPU {
-    
+namespace PPU
+{ 
     struct Pixel
     {
         uint8_t r;

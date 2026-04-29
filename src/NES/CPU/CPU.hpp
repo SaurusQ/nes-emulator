@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Definitions.hpp"
-#include "RAM.hpp"
 #include "../Mappers/Mapper.hpp"
 
 #include <cstdint>
@@ -60,15 +59,11 @@ namespace CPU
             std::string getCurrentCycleStr() const { return "Cycles: " + std::to_string(cycle_); }
             uint16_t getCurrentAddress() const { return registers_.PC; }
             bool nextInstruction() const { return insCyclesToExecute_ == 0; }
-    
-            RAM getRAMmutable() { return ram_; }
-            const RAM& getRAM() const { return ram_; }
-    
+        
         private:
             std::string getRegisterStatusStr(bool renderVersion) const;
     
             Registers registers_;
-            RAM ram_;
             Mapper& mapper_;
             
             uint64_t cycle_ = 0;
