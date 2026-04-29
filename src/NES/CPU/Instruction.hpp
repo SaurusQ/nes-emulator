@@ -2,7 +2,7 @@
 
 #include "Definitions.hpp"
 #include "CPU.hpp"
-#include "Memory.hpp"
+#include "RAM.hpp"
 #include "Operation.hpp"
 #include "MemoryAddressing.hpp"
 
@@ -63,8 +63,8 @@ namespace CPU
     class InstructionHelper
     {
         public:
-            static std::string getInstructionString(const InstructionInfo& info, uint16_t address, const Memory& memory);
-            static std::string getInstructionListString(uint16_t address, const Memory& memory, unsigned int count);
-            static std::string getStr(const InstructionInfo& info, uint8_t* memory);
+            static std::string getInstructionString(const InstructionInfo& info, uint16_t address, const Mapper& mapper);
+            static std::string getInstructionListString(uint16_t address, const Mapper& mapper, unsigned int count);
+            static std::string getStr(const InstructionInfo& info, const uint8_t* ram);
     };
 }

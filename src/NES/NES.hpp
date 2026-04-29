@@ -21,4 +21,5 @@ class NES
     private:
         CPU::CPU cpu_;
         PPU::PPU ppu_;
+        Mapper mapper_;
 };

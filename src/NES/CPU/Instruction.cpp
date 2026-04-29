@@ -10,18 +10,20 @@
 
 namespace CPU
 {
-    std::string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, const Memory& memory)
+    std::string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, const Mapper& mapper)
     {
         std::ostringstream oss;
         if (std::strlen(info.name) == 3) oss << " ";
         oss << std::hex << std::uppercase << info.name;
         
-        uint8_t* memoryPtr = memory.getMemoryPtr() + address + 1; // Skip opcode
+        address += 1; // Skip opcode
         
         std::vector<uint8_t> bytes;
         for (int i = 0; i < info.bytes; i++)
         {
-            bytes.push_back(memoryPtr[i]);
+            uint8_t byte;
+            mapper.read<Addressspace::CPU>(address + i, byte); // TODO how the lookahead should be done? Limits=
+            bytes.push_back(byte);
         }
         uint16_t twoBytes = 0;
         if (bytes.size() >= 2)
@@ -71,40 +73,29 @@ namespace CPU
         return s.append(pad, ' ');
     }
 
-    std::string InstructionHelper::getInstructionListString(uint16_t address, const Memory& memory, unsigned int count)
+    std::string InstructionHelper::getInstructionListString(uint16_t address, const Mapper& mapper, unsigned int count)
     {
         std::ostringstream oss;
         oss << std::hex << std::uppercase;
         
-        uint8_t* memoryPtr = memory.getMemoryPtr();
-        
         for (unsigned int instructionNum = 0; instructionNum < count; instructionNum++)
         {
-            if (address > memory.size())
-            {
-                oss << "OVF";
-                break;
-            }
-            uint8_t opcode = *(memoryPtr + address);
+            uint8_t opcode;
+            mapper.read<Addressspace::CPU>(address, opcode);
             
             const InstructionInfo& instructionInfo = opcodeInfoTable[opcode];
-            if (address + instructionInfo.bytes > memory.size())
-            {
-                oss << "OVF";
-                break;
-            }
-            oss << "$" << std::setw(4) << std::setfill('0') << address << " " << getStr(instructionInfo, memoryPtr + address) << "\n";
+            oss << "$" << std::setw(4) << std::setfill('0') << address << " " << getStr(instructionInfo, ramPtr + address) << "\n";
             address += instructionInfo.bytes;
         }
         return oss.str();
     }
 
-    std::string InstructionHelper::getStr(const InstructionInfo& info, uint8_t* memory)
+    std::string InstructionHelper::getStr(const InstructionInfo& info, const uint8_t* ram)
     {
         std::ostringstream oss;
         oss << std::hex << std::uppercase << info.name;
         
-        uint8_t* memoryPtr = memory + 1; // Skip opcode
+        const uint8_t* ramPtr = ram + 1; // Skip opcode
         
         switch (info.mode)
         {
@@ -116,37 +107,37 @@ namespace CPU
             oss << " A {ACC}";
             break;
             case AddressingMode::IMMEDIATE:
-            oss << " #" << std::setw(2) << std::setfill('0') << static_cast<int>(*(memoryPtr)) << " {IMM}";
+            oss << " #" << std::setw(2) << std::setfill('0') << static_cast<int>(*(ramPtr)) << " {IMM}";
             break;
             case AddressingMode::ZERO_PAGE:
-            oss << " $" << std::setw(2) << std::setfill('0') << static_cast<int>(*(memoryPtr)) << " {ZP0}";
+            oss << " $" << std::setw(2) << std::setfill('0') << static_cast<int>(*(ramPtr)) << " {ZP0}";
             break;
             case AddressingMode::ZERO_PAGE_X:
-            oss << " $" << std::setw(2) << std::setfill('0') << static_cast<int>(*(memoryPtr)) << ", X {ZPX}";
+            oss << " $" << std::setw(2) << std::setfill('0') << static_cast<int>(*(ramPtr)) << ", X {ZPX}";
             break;
             case AddressingMode::ZERO_PAGE_Y:
-            oss << " $" << std::setw(2) << std::setfill('0') << static_cast<int>(*(memoryPtr)) << ", Y {ZPY}";
+            oss << " $" << std::setw(2) << std::setfill('0') << static_cast<int>(*(ramPtr)) << ", Y {ZPY}";
             break;
             case AddressingMode::RELATIVE:
-            oss << " $" << std::setw(2) << std::setfill('0') << +static_cast<int8_t>(*(memoryPtr)) << " {REL}";
+            oss << " $" << std::setw(2) << std::setfill('0') << +static_cast<int8_t>(*(ramPtr)) << " {REL}";
             break;
             case AddressingMode::ABSOLUTE:
-            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << " {ABS}";
+            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(ramPtr), *(ramPtr + 1)) << " {ABS}";
             break;
             case AddressingMode::ABSOLUTE_X:
-            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << ", X {ABX}";
+            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(ramPtr), *(ramPtr + 1)) << ", X {ABX}";
             break;
             case AddressingMode::ABSOLUTE_Y:
-            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << ", Y {ABY}";
+            oss << " $" << std::setw(4) << std::setfill('0') << make16(*(ramPtr), *(ramPtr + 1)) << ", Y {ABY}";
             break;
             case AddressingMode::INDIRECT:
-            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << ") {IND}";
+            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(ramPtr), *(ramPtr + 1)) << ") {IND}";
             break;
             case AddressingMode::INDIRECT_X:
-            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << ", X) {INX}";
+            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(ramPtr), *(ramPtr + 1)) << ", X) {INX}";
             break;
             case AddressingMode::INDIRECT_Y:
-            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(memoryPtr), *(memoryPtr + 1)) << "), Y {INY}";
+            oss << " ($" << std::setw(4) << std::setfill('0') << make16(*(ramPtr), *(ramPtr + 1)) << "), Y {INY}";
             break;
             default:
             oss << " {UNK}";

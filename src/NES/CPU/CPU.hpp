@@ -2,6 +2,7 @@
 
 #include "Definitions.hpp"
 #include "RAM.hpp"
+#include "../Mappers/Mapper.hpp"
 
 #include <cstdint>
 #include <fstream>
@@ -42,7 +43,7 @@ namespace CPU
         template<InstructionType IT, AddressingMode AM>
         friend class Operation;
         public:
-            CPU();
+            CPU(Mapper& mapper);
             ~CPU();
             void resetRegisters();
             void clockTick();
@@ -68,6 +69,8 @@ namespace CPU
     
             Registers registers_;
             RAM ram_;
+            Mapper& mapper_;
+            
             uint64_t cycle_ = 0;
             uint64_t insCyclesToExecute_ = 0;
     

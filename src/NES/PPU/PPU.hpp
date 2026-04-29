@@ -3,16 +3,18 @@
 #include "Registers.hpp"
 #include "Definitions.hpp"
 #include "VRAM.hpp"
+#include "../Mappers/Mapper.hpp"
+#include "../Memory/Addressable.hpp"
 
 #include <cstdint>
 #include <vector>
 
 namespace PPU
 {
-    class PPU
+    class PPU : public Addressable
     {
         public:
-            PPU();
+            PPU(Mapper& mapper);
             ~PPU() = default;
 
             void reset();
@@ -23,10 +25,15 @@ namespace PPU
 
             const uint8_t* getPatternTableAddress() const { return vram_.getMemoryPtr(); }
         
+            // Addressable
+            size_t size() const { return 8; }
+        protected:
+            inline uint8_t* getMemoryPtr() { reinterpret_cast<const uint8_t*>(&reg_); }
         private:
             uint16_t getBaseNameTableAddress();
             uint16_t getSpritePatternTableAddress();
     
+            Mapper& mapper_;
             Registers reg_;
             uint64_t cycle_ = 0;
             uint16_t dot_ = 0;
