@@ -13,9 +13,9 @@ class RAM : public Addressable
         RAM() = default;
         ~RAM() = default;
 
-        size_t size() const { return NES_CPU_RAM_SIZE; };
+        size_t size() const { return NES_CPU_RAM_SIZE; }
     protected:
-        inline uint8_t* getMemoryPtr() { return ram_; };
+        inline uint8_t* getMemoryPtr() { return ram_; }
     private:
         uint8_t ram_[NES_CPU_RAM_SIZE];
 };

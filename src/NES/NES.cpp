@@ -7,11 +7,12 @@
 #include <vector>
 #include <iomanip>
 
-NES::NES()
-    : cpu_(mapper_)
+NES::NES(Mapper& mapper)
+    : mapper_(mapper)
+    , cpu_(mapper_)
     , ppu_(mapper_)
 {
-
+    mapper_.attach(this->ppu_, this->ram_, this->vram_);
 }
 
 NES::~NES()

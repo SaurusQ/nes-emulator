@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Memory/RAM.hpp"
+#include "../RAM.hpp"
+#include "../PPU/PPU.hpp"
 
 #include <cstdint>
 
@@ -12,6 +13,7 @@ enum class Addressspace
     PPU,
     UNK
 };
+
 namespace AS
 {
     constexpr Addressspace CPU = Addressspace::CPU;
@@ -21,11 +23,13 @@ namespace AS
 class Mapper
 {
     public:
-        Mapper();
+        Mapper() =  default;
         ~Mapper() = default;
 
+        void attach(PPU::PPU& ppu, RAM& ram, VRAM& vram);
+
         template<Addressspace AS>
-        void read(uint16_t address, uint8_t& data) const
+        inline void read(uint16_t address, uint8_t& data) const
         {
             if constexpr (AS == Addressspace::CPU)
             {
@@ -39,7 +43,7 @@ class Mapper
             }
         };
         template<Addressspace AS>
-        void store(uint16_t address, uint8_t data)
+        inline void store(uint16_t address, uint8_t data)
         {
             if constexpr (AS == Addressspace::CPU)
             {
@@ -53,13 +57,20 @@ class Mapper
             }
         };
 
-        void storeCPU(uint16_t address, uint8_t data);
-        void storePPU(uint16_t address, uint8_t data);
-        void readCPU(uint16_t address, uint8_t& data) const;
-        void readPPU(uint16_t address, uint8_t& data) const;
-
-        const RAM& getRAM() const { return ram_; }
-
+        inline void storeCPU(uint16_t address, uint8_t data);
+        inline void readCPU(uint16_t address, uint8_t& data) const;
+        
+        inline void storePPU(uint16_t address, uint8_t data);
+        inline void readPPU(uint16_t address, uint8_t& data) const;
+        
     private:
-        RAM ram_;
+        inline virtual void mapperReadCPU(uint16_t address, uint8_t& data) const;
+        inline virtual void mapperStoreCPU(uint16_t address, uint8_t data);
+        
+        inline virtual void mapperReadPPU(uint16_t address, uint8_t& data) const;
+        inline virtual void mapperStorePPU(uint16_t address, uint8_t data);
+        
+        PPU::PPU&   ppu_;
+        RAM&        ram_;
+        VRAM&       vram_;
 };

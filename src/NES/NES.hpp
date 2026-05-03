@@ -2,11 +2,14 @@
 
 #include "CPU/CPU.hpp"
 #include "PPU/PPU.hpp"
+#include "RAM.hpp"
+#include "VRAM.hpp"
+#include "Cartridge/Mapper.hpp"
 
 class NES
 {
     public:   
-        NES();
+        NES(Mapper& mapper);
         ~NES();
 
         void powerOn();
@@ -22,5 +25,7 @@ class NES
     private:
         CPU::CPU cpu_;
         PPU::PPU ppu_;
+        RAM ram_ = RAM();
+        VRAM vram_ = VRAM();
         Mapper mapper_;
 };

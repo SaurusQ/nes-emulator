@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Definitions.hpp"
-#include "../Mappers/Mapper.hpp"
+#include "../Cartridge/Mapper.hpp"
 
 #include <cstdint>
 #include <fstream>
