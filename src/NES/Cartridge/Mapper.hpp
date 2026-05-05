@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../RAM.hpp"
+#include "../VRAM.hpp"
 #include "../PPU/PPU.hpp"
 
 #include <cstdint>
@@ -14,63 +15,20 @@ enum class Addressspace
     UNK
 };
 
-namespace AS
-{
-    constexpr Addressspace CPU = Addressspace::CPU;
-    constexpr Addressspace PPU = Addressspace::PPU;
-}
-
 class Mapper
 {
     public:
-        Mapper() =  default;
+        Mapper() = default;
         ~Mapper() = default;
 
-        void attach(PPU::PPU& ppu, RAM& ram, VRAM& vram);
+        void attach(VRAM* vram) { vram_ = vram; }
 
-        template<Addressspace AS>
-        inline void read(uint16_t address, uint8_t& data) const
-        {
-            if constexpr (AS == Addressspace::CPU)
-            {
-                this->readCPU(address, data);
-            } else if constexpr (AS == Addressspace::PPU)
-            {
-                this->readPPU(address, data);
-            }
-            else {
-                static_assert(dependent_false<AS>, "Invalid address space for read operation");
-            }
-        };
-        template<Addressspace AS>
-        inline void store(uint16_t address, uint8_t data)
-        {
-            if constexpr (AS == Addressspace::CPU)
-            {
-                this->storeCPU(address, data);
-            } else if constexpr (AS == Addressspace::PPU)
-            {
-                this->storePPU(address, data);
-            }
-            else {
-                static_assert(dependent_false<AS>, "Invalid address space for write operation");
-            }
-        };
-
-        inline void storeCPU(uint16_t address, uint8_t data);
-        inline void readCPU(uint16_t address, uint8_t& data) const;
+        virtual void storeCPU(uint16_t address, uint8_t data) = 0;
+        virtual bool readCPU(uint16_t address, uint8_t& data) const = 0;
         
-        inline void storePPU(uint16_t address, uint8_t data);
-        inline void readPPU(uint16_t address, uint8_t& data) const;
+        virtual void storePPU(uint16_t address, uint8_t data) = 0;
+        virtual bool readPPU(uint16_t address, uint8_t& data) const = 0;
         
-    private:
-        inline virtual void mapperReadCPU(uint16_t address, uint8_t& data) const;
-        inline virtual void mapperStoreCPU(uint16_t address, uint8_t data);
-        
-        inline virtual void mapperReadPPU(uint16_t address, uint8_t& data) const;
-        inline virtual void mapperStorePPU(uint16_t address, uint8_t data);
-        
-        PPU::PPU&   ppu_;
-        RAM&        ram_;
-        VRAM&       vram_;
+    protected:
+        VRAM* vram_ = nullptr;
 };

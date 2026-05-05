@@ -7,12 +7,15 @@
 #include <vector>
 #include <iomanip>
 
-NES::NES(Mapper& mapper)
+NES::NES(Mapper* mapper)
     : mapper_(mapper)
-    , cpu_(mapper_)
-    , ppu_(mapper_)
+    , ram_()
+    , vram_()
+    , bus_(mapper_, ppu_.getRegisters(), ram_)
+    , cpu_(bus_)
+    , ppu_(bus_)
 {
-    mapper_.attach(this->ppu_, this->ram_, this->vram_);
+    mapper_->attach(&vram_);
 }
 
 NES::~NES()

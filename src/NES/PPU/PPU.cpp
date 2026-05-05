@@ -3,8 +3,8 @@
 
 namespace PPU
 {
-    PPU::PPU(Mapper& mapper)
-        : mapper_(mapper)
+    PPU::PPU(Bus& bus)
+        : bus_(bus)
     {
         reg_.ppuctrl.reg    = 0x00;
         reg_.ppumask.reg    = 0x00;

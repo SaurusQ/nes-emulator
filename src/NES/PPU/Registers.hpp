@@ -4,6 +4,8 @@
 
 namespace PPU
 {
+    constexpr size_t PPU_REGISTERS_SIZE = 8;
+
     struct InternalRegisters
     {
         uint16_t v;         // Current VRAM address (15 bits)
@@ -65,17 +67,23 @@ namespace PPU
     typedef uint8_t  PPUDATA;   // VRAM data
     typedef uint8_t  OAMDMA;    // Sprite DMA
 
-    struct Registers
+    class Registers : public Addressable
     {
-        PPUCTRL ppuctrl;
-        PPUMASK ppumask;
-        PPUSTATUS ppustatus;
-        OAMADDR oamaddr;
-        OAMDATA oamdata;
-        PPUSCROLL ppuscroll;
-        PPUADDR ppuaddr;
-        PPUDATA ppudata;
-        OAMDMA oamdma;
-        InternalRegisters internal;
+        friend class PPU;
+        public:
+            size_t size() const { return PPU_REGISTERS_SIZE; }
+        protected:
+            inline uint8_t* getMemoryPtr() { return reinterpret_cast<uint8_t*>(this); }
+
+            PPUCTRL ppuctrl;
+            PPUMASK ppumask;
+            PPUSTATUS ppustatus;
+            OAMADDR oamaddr;
+            OAMDATA oamdata;
+            PPUSCROLL ppuscroll;
+            PPUADDR ppuaddr;
+            PPUDATA ppudata;
+            OAMDMA oamdma;
+            InternalRegisters internal;
     };
 }

@@ -2,20 +2,20 @@
 
 #include "Registers.hpp"
 #include "Definitions.hpp"
-#include "VRAM.hpp"
-#include "../Cartridge/Mapper.hpp"
+#include "../Bus.hpp"
 #include "../Addressable.hpp"
 
 #include <cstdint>
 #include <vector>
 
-constexpr size_t PPU_REGISTERS_SIZE = 8;
+
+class Mapper;
 namespace PPU
 {
-    class PPU : public Addressable
+    class PPU
     {
         public:
-            PPU(Mapper& mapper);
+            PPU(Bus& bus);
             ~PPU() = default;
 
             void reset();
@@ -24,14 +24,12 @@ namespace PPU
             void copyScreenBuffer(std::vector<Pixel>& dst) const { dst = screenBuffer_; }
             std::vector<Pixel> getScreenBuffer() const { return screenBuffer_; }
 
-            size_t size() const { return PPU_REGISTERS_SIZE; }
-        protected:
-            inline uint8_t* getMemoryPtr() { return reinterpret_cast<uint8_t*>(&reg_); }
+            Registers& getRegisters() { return reg_; }
         private:
             uint16_t getBaseNameTableAddress();
             uint16_t getSpritePatternTableAddress();
     
-            Mapper& mapper_;
+            Bus& bus_;
             Registers reg_;
             uint64_t cycle_ = 0;
             uint16_t dot_ = 0;

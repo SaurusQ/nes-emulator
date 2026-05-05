@@ -1,32 +1,43 @@
-#include "Mapper.hpp"
+#include "Bus.hpp"
 
 
-void Mapper::attach(PPU::PPU& ppu, Cartridge::Cartridge& cartridge, RAM& ram, VRAM& vram)
+Bus::Bus(Mapper* mapper, PPU::Registers& ppu, RAM& ram)
+    : mapper_(mapper)
+    , ppu_(ppu)
+    , ram_(ram)
 {
-    ppu_        = ppu;
-    cartridge_  = cartridge;
-    ram_        = ram;
-    vram_       = vram;
+
 }
 
-void Mapper::readCPU(uint16_t address, uint8_t& data) const
+void Bus::readCPU(uint16_t address, uint8_t& data)
 {
+    bool mapped = false;
     if (address < 0x2000) // RAM
     {
+        mapped = true;
         ram_.read(0x07FF & address, data); // Mirrored banks
     }
     else if (address < 0x4000) // PPU
     {
+        mapped = true;
         ppu_.read(0x0007 & address, data); // Mirrored every 8 bytes
     }
     else if (address < 0x4020) // APU & I/O
     {
+        mapped = true; // TODO
         // Pass for now
     }
-    this->mapperReadCPU(address, data);
+
+    mapped |= mapper_->readCPU(address, data);
+    
+    if (!mapped) // Open bus behavior: return last value on the bus
+    {
+        data = lastReadCPU_;
+    }
+    lastReadCPU_ = data;
 }
 
-void Mapper::storeCPU(uint16_t address, uint8_t data)
+void Bus::storeCPU(uint16_t address, uint8_t data)
 {
     if (address < 0x2000) // RAM
     {
@@ -40,15 +51,7 @@ void Mapper::storeCPU(uint16_t address, uint8_t data)
     {
         // Pass for now
     }
-    this->mapperStoreCPU(address, data);
+
+    mapper_->storeCPU(address, data);
 }
 
-void Mapper::readPPU(uint16_t address, uint8_t& data) const
-{
-
-}
-
-void Mapper::storePPU(uint16_t address, uint8_t data)
-{
-
-}

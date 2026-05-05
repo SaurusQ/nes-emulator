@@ -11,8 +11,8 @@
 namespace CPU
 {
 
-    CPU::CPU(Mapper& mapper)
-        : mapper_(mapper)   
+    CPU::CPU(Bus& bus)
+        : bus_(bus)
     {
         //registers_.PC   = 0xFFFC;
         registers_.PC   = 0xC000;
@@ -48,7 +48,7 @@ namespace CPU
         }
         
         uint8_t opcode = 0x00;
-        mapper_.read<AS::CPU>(registers_.PC, opcode);
+        bus_.readCPU(registers_.PC, opcode);
         
         const auto& instruction = opcodeTable[opcode];
         
@@ -62,7 +62,7 @@ namespace CPU
             for (int i = 0; i < insInfo.bytes; i++)
             {
                 uint8_t byte;
-                mapper_.read<AS::CPU>(registers_.PC + i, byte);
+                bus_.readCPU(registers_.PC + i, byte);
                 oss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << static_cast<int>(byte) << " ";
             }
             int padBytes = 3 - insInfo.bytes;
@@ -111,83 +111,83 @@ namespace CPU
                 value = registers_.A;
                 return false;
             case IMMEDIATE:
-                mapper_.read<AS::CPU>(registers_.PC, value);
+                bus_.readCPU(registers_.PC, value);
                 registers_.PC++;
                 return false;
             case ZERO_PAGE:
-                mapper_.read<AS::CPU>(registers_.PC, byte);
+                bus_.readCPU(registers_.PC, byte);
                 registers_.PC++;
                 targetAddress = static_cast<uint16_t>(byte);
-                mapper_.read<AS::CPU>(targetAddress, value);
+                bus_.readCPU(targetAddress, value);
                 return true;
             case ZERO_PAGE_X:
-                mapper_.read<AS::CPU>(registers_.PC, byte);
+                bus_.readCPU(registers_.PC, byte);
                 registers_.PC++;
                 byte += registers_.X; // Overflow expected
                 targetAddress = static_cast<uint16_t>(byte);
-                mapper_.read<AS::CPU>(targetAddress, value);
+                bus_.readCPU(targetAddress, value);
                 return true;
             case ZERO_PAGE_Y:
-                mapper_.read<AS::CPU>(registers_.PC, byte);
+                bus_.readCPU(registers_.PC, byte);
                 registers_.PC++;
                 byte += registers_.Y; // Overflow expected
                 targetAddress = static_cast<uint16_t>(byte);
-                mapper_.read<AS::CPU>(targetAddress, value);
+                bus_.readCPU(targetAddress, value);
                 return true;
             case RELATIVE: // Branch instructions
-                mapper_.read<AS::CPU>(registers_.PC, value);
+                bus_.readCPU(registers_.PC, value);
                 registers_.PC++;
                 return false;
             case ABSOLUTE:
-                mapper_.read<AS::CPU>(registers_.PC, lowByte);
+                bus_.readCPU(registers_.PC, lowByte);
                 registers_.PC++;
-                mapper_.read<AS::CPU>(registers_.PC, highByte);
+                bus_.readCPU(registers_.PC, highByte);
                 registers_.PC++;
                 targetAddress = make16(lowByte, highByte);
-                mapper_.read<AS::CPU>(targetAddress, value);
+                bus_.readCPU(targetAddress, value);
                 return true;
             case ABSOLUTE_X:
-                mapper_.read<AS::CPU>(registers_.PC, lowByte);
+                bus_.readCPU(registers_.PC, lowByte);
                 registers_.PC++;
-                mapper_.read<AS::CPU>(registers_.PC, highByte);
+                bus_.readCPU(registers_.PC, highByte);
                 registers_.PC++;
                 targetAddress = make16(lowByte, highByte);
-                mapper_.read<AS::CPU>(0xFF & (targetAddress + registers_.X), value);
+                bus_.readCPU(0xFF & (targetAddress + registers_.X), value);
                 return true;
             case ABSOLUTE_Y:
-                mapper_.read<AS::CPU>(registers_.PC, lowByte);
+                bus_.readCPU(registers_.PC, lowByte);
                 registers_.PC++;
-                mapper_.read<AS::CPU>(registers_.PC, highByte);
+                bus_.readCPU(registers_.PC, highByte);
                 registers_.PC++;
                 targetAddress = make16(lowByte, highByte);;
-                mapper_.read<AS::CPU>(targetAddress + registers_.Y, value);
+                bus_.readCPU(targetAddress + registers_.Y, value);
                 return true;
             case INDIRECT:
-                mapper_.read<AS::CPU>(registers_.PC, lowByte);
+                bus_.readCPU(registers_.PC, lowByte);
                 registers_.PC++;
-                mapper_.read<AS::CPU>(registers_.PC, highByte);
+                bus_.readCPU(registers_.PC, highByte);
                 registers_.PC++;
                 targetAddress = make16(lowByte, highByte);
                 registers_.PC = targetAddress;
                 return false;
             case INDIRECT_X:
-                mapper_.read<AS::CPU>(registers_.PC, byte);
+                bus_.readCPU(registers_.PC, byte);
                 registers_.PC++;
                 byte += registers_.Y; // Overflow expected
                 targetAddress = static_cast<uint16_t>(byte);
-                mapper_.read<AS::CPU>(targetAddress,     lowByte);
-                mapper_.read<AS::CPU>(targetAddress + 1, highByte);
+                bus_.readCPU(targetAddress,     lowByte);
+                bus_.readCPU(targetAddress + 1, highByte);
                 targetAddress = make16(lowByte, highByte);
-                mapper_.read<AS::CPU>(targetAddress, value);
+                bus_.readCPU(targetAddress, value);
                 return true;
             case INDIRECT_Y:
-                mapper_.read<AS::CPU>(registers_.PC, byte);
+                bus_.readCPU(registers_.PC, byte);
                 registers_.PC++;
                 targetAddress = static_cast<uint16_t>(byte);
-                mapper_.read<AS::CPU>(targetAddress,     lowByte);
-                mapper_.read<AS::CPU>(targetAddress + 1, highByte);
+                bus_.readCPU(targetAddress,     lowByte);
+                bus_.readCPU(targetAddress + 1, highByte);
                 targetAddress = make16(lowByte, highByte) + registers_.Y;
-                mapper_.read<AS::CPU>(targetAddress, value);
+                bus_.readCPU(targetAddress, value);
                 return true;
             default:
                 std::cerr << "Addressing mode not implemented!" << std::endl;

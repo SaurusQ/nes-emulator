@@ -2,7 +2,7 @@
 
 #include "Definitions.hpp"
 #include "CPU.hpp"
-#include "../Mappers/Mapper.hpp"
+#include "../Cartridge/Mapper.hpp"
 #include "Operation.hpp"
 #include "MemoryAddressing.hpp"
 

@@ -85,7 +85,7 @@ namespace CPU
                         }
                         else
                         {
-                            cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                            cpu.bus_.storeCPU(targetAddress, mem);
                         }
                         return false;
                     }
@@ -152,11 +152,11 @@ namespace CPU
                     }
                 case BRK:
                     {
-                        cpu.mapper_.store<AS::CPU>(spToAddr(cpu.registers_.SP), getHighByte(cpu.registers_.PC));
+                        cpu.bus_.storeCPU(spToAddr(cpu.registers_.SP), getHighByte(cpu.registers_.PC));
                         cpu.registers_.SP--;
-                        cpu.mapper_.store<AS::CPU>(spToAddr(cpu.registers_.SP), getLowByte(cpu.registers_.PC));
+                        cpu.bus_.storeCPU(spToAddr(cpu.registers_.SP), getLowByte(cpu.registers_.PC));
                         cpu.registers_.SP--;
-                        cpu.mapper_.store<AS::CPU>(spToAddr(cpu.registers_.SP), cpu.registers_.P.reg);
+                        cpu.bus_.storeCPU(spToAddr(cpu.registers_.SP), cpu.registers_.P.reg);
                         cpu.registers_.SP--;
                         cpu.registers_.PC = 0xFFFE; // IRQ, interrupt request
                         return false;
@@ -223,7 +223,7 @@ namespace CPU
                 case DCP: // Unofficial
                     {
                         mem -= 1;
-                        cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        cpu.bus_.storeCPU(targetAddress, mem);
                         
                         uint8_t result = cpu.registers_.A - mem;
                         cpu.registers_.P.C = cpu.registers_.A >= mem;
@@ -233,7 +233,7 @@ namespace CPU
                 case DEC:
                     {
                         mem -= 1;
-                        cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        cpu.bus_.storeCPU(targetAddress, mem);
                         setZN(cpu.registers_.P, mem);
                         return false;
                     }
@@ -258,7 +258,7 @@ namespace CPU
                 case INC:
                     {
                         mem += 1;
-                        cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        cpu.bus_.storeCPU(targetAddress, mem);
                         setZN(cpu.registers_.P, mem);
                         return false;
                     }
@@ -277,7 +277,7 @@ namespace CPU
                 case ISC: // Unofficial
                     {
                         mem += 1;
-                        cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        cpu.bus_.storeCPU(targetAddress, mem);
                         mem = ~mem;
                         uint8_t A = cpu.registers_.A;
                         uint16_t sum = (uint16_t)cpu.registers_.A + (uint16_t)mem + (uint16_t)cpu.registers_.P.C;
@@ -295,9 +295,9 @@ namespace CPU
                 case JSR:
                     {
                         uint16_t returnAddress = cpu.registers_.PC - 1;
-                        cpu.mapper_.store<AS::CPU>(spToAddr(cpu.registers_.SP), getHighByte(returnAddress));
+                        cpu.bus_.storeCPU(spToAddr(cpu.registers_.SP), getHighByte(returnAddress));
                         cpu.registers_.SP--;
-                        cpu.mapper_.store<AS::CPU>(spToAddr(cpu.registers_.SP), getLowByte(returnAddress));
+                        cpu.bus_.storeCPU(spToAddr(cpu.registers_.SP), getLowByte(returnAddress));
                         cpu.registers_.SP--;
                         cpu.registers_.PC = targetAddress;
                         return false;
@@ -334,7 +334,7 @@ namespace CPU
                         cpu.registers_.P.C = newCarry;
     
                         if (AM == ACCUMULATOR) cpu.registers_.A = mem;
-                        else cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        else cpu.bus_.storeCPU(targetAddress, mem);
     
                         setZN(cpu.registers_.P, mem);
                         return false;
@@ -354,20 +354,20 @@ namespace CPU
                     }
                 case PHA:
                     {
-                        cpu.mapper_.store<AS::CPU>(spToAddr(cpu.registers_.SP), cpu.registers_.A);
+                        cpu.bus_.storeCPU(spToAddr(cpu.registers_.SP), cpu.registers_.A);
                         cpu.registers_.SP--;
                         return false;
                     }
                 case PHP:
                     {
-                        cpu.mapper_.store<AS::CPU>(spToAddr(cpu.registers_.SP), bAsHigh(cpu.registers_.P.reg));
+                        cpu.bus_.storeCPU(spToAddr(cpu.registers_.SP), bAsHigh(cpu.registers_.P.reg));
                         cpu.registers_.SP--;
                         return false;
                     }
                 case PLA:
                     {
                         cpu.registers_.SP++;
-                        cpu.mapper_.read<AS::CPU>(spToAddr(cpu.registers_.SP), cpu.registers_.A);
+                        cpu.bus_.readCPU(spToAddr(cpu.registers_.SP), cpu.registers_.A);
                         setZN(cpu.registers_.P, cpu.registers_.A);
                         return false;
                     }
@@ -375,7 +375,7 @@ namespace CPU
                     {
                         cpu.registers_.SP++;
                         uint8_t byte;
-                        cpu.mapper_.read<AS::CPU>(spToAddr(cpu.registers_.SP), byte);
+                        cpu.bus_.readCPU(spToAddr(cpu.registers_.SP), byte);
                         cpu.registers_.P.reg = readStatusWithoutUB(cpu.registers_.P.reg, byte);
                         return false;
                     }
@@ -386,7 +386,7 @@ namespace CPU
                         mem |= cpu.registers_.P.C;
                         cpu.registers_.P.C = newCarry;
                         
-                        cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        cpu.bus_.storeCPU(targetAddress, mem);
     
                         cpu.registers_.A &= mem;
                         setZN(cpu.registers_.P, cpu.registers_.A);
@@ -399,7 +399,7 @@ namespace CPU
                         mem |= cpu.registers_.P.C << 7;
                         cpu.registers_.P.C = newCarry;
     
-                        cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        cpu.bus_.storeCPU(targetAddress, mem);
                         
                         uint8_t A = cpu.registers_.A;
                         uint16_t sum = (uint16_t)cpu.registers_.A + (uint16_t)mem + (uint16_t)cpu.registers_.P.C;
@@ -417,7 +417,7 @@ namespace CPU
                         cpu.registers_.P.C = newCarry;
                         
                         if (AM == ACCUMULATOR) cpu.registers_.A = mem;
-                        else cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        else cpu.bus_.storeCPU(targetAddress, mem);
     
                         cpu.registers_.P.N = (mem & 0x80) != 0;
                         cpu.registers_.P.Z = cpu.registers_.A == 0;
@@ -431,7 +431,7 @@ namespace CPU
                         cpu.registers_.P.C = newCarry;
     
                         if (AM == ACCUMULATOR) cpu.registers_.A = mem;
-                        else cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        else cpu.bus_.storeCPU(targetAddress, mem);
                         
                         cpu.registers_.P.N = (mem & 0x80) != 0;
                         cpu.registers_.P.Z = cpu.registers_.A == 0;
@@ -441,12 +441,12 @@ namespace CPU
                     {
                         uint8_t byte, high, low;;
                         cpu.registers_.SP++;
-                        cpu.mapper_.read<AS::CPU>(spToAddr(cpu.registers_.SP), byte);
+                        cpu.bus_.readCPU(spToAddr(cpu.registers_.SP), byte);
                         cpu.registers_.P.reg = readStatusWithoutUB(cpu.registers_.P.reg, byte);
                         cpu.registers_.SP++;
-                        cpu.mapper_.read<AS::CPU>(spToAddr(cpu.registers_.SP), low);
+                        cpu.bus_.readCPU(spToAddr(cpu.registers_.SP), low);
                         cpu.registers_.SP++;
-                        cpu.mapper_.read<AS::CPU>(spToAddr(cpu.registers_.SP), high);
+                        cpu.bus_.readCPU(spToAddr(cpu.registers_.SP), high);
                         cpu.registers_.PC = make16(low, high);
                         return false;
                     }
@@ -454,9 +454,9 @@ namespace CPU
                     {
                         uint8_t high, low;
                         cpu.registers_.SP++;
-                        cpu.mapper_.read<AS::CPU>(spToAddr(cpu.registers_.SP), low);
+                        cpu.bus_.readCPU(spToAddr(cpu.registers_.SP), low);
                         cpu.registers_.SP++;
-                        cpu.mapper_.read<AS::CPU>(spToAddr(cpu.registers_.SP), high);
+                        cpu.bus_.readCPU(spToAddr(cpu.registers_.SP), high);
                         cpu.registers_.PC = make16(low, high);
                         cpu.registers_.PC++;
                         return false;
@@ -464,7 +464,7 @@ namespace CPU
                 case SAX: // Unofficial
                     {
                         uint8_t byte = cpu.registers_.A & cpu.registers_.X;
-                        cpu.mapper_.store<AS::CPU>(targetAddress, byte);
+                        cpu.bus_.storeCPU(targetAddress, byte);
                         return false;
                     }
                 case SBC:
@@ -500,7 +500,7 @@ namespace CPU
                     {
                         cpu.registers_.P.C = mem & 0x80;
                         mem <<= 1;
-                        cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        cpu.bus_.storeCPU(targetAddress, mem);
                         cpu.registers_.A |= mem;
                         setZN(cpu.registers_.P, cpu.registers_.A);
                         return false;
@@ -510,24 +510,24 @@ namespace CPU
                         bool newCarry = mem & 0x01;
                         mem >>= 1;
                         cpu.registers_.P.C = newCarry;
-                        cpu.mapper_.store<AS::CPU>(targetAddress, mem);
+                        cpu.bus_.storeCPU(targetAddress, mem);
                         cpu.registers_.A ^= mem;
                         setZN(cpu.registers_.P, cpu.registers_.A);
                         return false;
                     }
                 case STA:
                     {
-                        cpu.mapper_.store<AS::CPU>(targetAddress, cpu.registers_.A);
+                        cpu.bus_.storeCPU(targetAddress, cpu.registers_.A);
                         return false;
                     }
                 case STX:
                     {
-                        cpu.mapper_.store<AS::CPU>(targetAddress, cpu.registers_.X);
+                        cpu.bus_.storeCPU(targetAddress, cpu.registers_.X);
                         return false;
                     }
                 case STY:
                     {
-                        cpu.mapper_.store<AS::CPU>(targetAddress, cpu.registers_.Y);
+                        cpu.bus_.storeCPU(targetAddress, cpu.registers_.Y);
                         return false;
                     }
                 case TAX:

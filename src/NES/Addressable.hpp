@@ -28,7 +28,7 @@ class Addressable
                     oss << start << "$" << std::setw(4) << std::setfill('0') << address + i;
                     start = "\n";
                 }
-                oss << " " << std::setw(2) << std::setfill('0') << static_cast<const int>(memory[address + i]);
+                oss << " " << std::setw(2) << std::setfill('0') << static_cast<int>(memory[address + i]) << " ";
             }
             return oss.str();
         }

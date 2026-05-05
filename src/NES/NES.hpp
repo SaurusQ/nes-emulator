@@ -2,6 +2,7 @@
 
 #include "CPU/CPU.hpp"
 #include "PPU/PPU.hpp"
+#include "Bus.hpp"
 #include "RAM.hpp"
 #include "VRAM.hpp"
 #include "Cartridge/Mapper.hpp"
@@ -9,7 +10,7 @@
 class NES
 {
     public:   
-        NES(Mapper& mapper);
+        NES(Mapper* mapper);
         ~NES();
 
         void powerOn();
@@ -20,12 +21,13 @@ class NES
 
         const CPU::CPU& getCPU() const { return cpu_; }
         const PPU::PPU& getPPU() const { return ppu_; }
-        const Mapper& getMapper() const { return mapper_; }
+        const Mapper& getMapper() const { return *mapper_; }
 
     private:
         CPU::CPU cpu_;
         PPU::PPU ppu_;
-        RAM ram_ = RAM();
-        VRAM vram_ = VRAM();
-        Mapper mapper_;
+        Bus bus_;
+        RAM ram_;
+        VRAM vram_;
+        Mapper* mapper_;
 };
