@@ -4,7 +4,7 @@
 #include "PPU/PPU.hpp"
 #include "RAM.hpp"
 #include "VRAM.hpp"
-#include "Mapper.hpp"
+#include "Cartridge/Mapper.hpp"
 
 #include <cstdint>
 #include <vector>

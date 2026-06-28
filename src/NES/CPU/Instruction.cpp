@@ -10,7 +10,7 @@
 
 namespace CPU
 {
-    std::string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, Bus& bus_)
+    std::string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, Bus* bus)
     {
         std::ostringstream oss;
         if (std::strlen(info.name) == 3) oss << " ";
@@ -22,7 +22,7 @@ namespace CPU
         for (int i = 0; i < info.bytes; i++)
         {
             uint8_t byte;
-            bus_.readCPU(address + i, byte); // TODO how the lookahead should be done? Limits=
+            bus->readCPU(address + i, byte); // TODO how the lookahead should be done? Limits=
             bytes.push_back(byte);
         }
         uint16_t twoBytes = 0;
@@ -73,7 +73,7 @@ namespace CPU
         return s.append(pad, ' ');
     }
 
-    std::string InstructionHelper::getInstructionListString(uint16_t address, const Mapper& mapper, unsigned int count)
+    std::string InstructionHelper::getInstructionListString(uint16_t address, Bus* bus, unsigned int count)
     {
         std::ostringstream oss;
         oss << std::hex << std::uppercase;
@@ -81,16 +81,16 @@ namespace CPU
         for (unsigned int instructionNum = 0; instructionNum < count; instructionNum++)
         {
             uint8_t opcode;
-            mapper.read<AS::CPU>(address, opcode);
+            bus->readCPU(address, opcode);
             
             const InstructionInfo& instructionInfo = opcodeInfoTable[opcode];
-            oss << "$" << std::setw(4) << std::setfill('0') << address << " " << getStr(instructionInfo, mapper, address) << "\n";
+            oss << "$" << std::setw(4) << std::setfill('0') << address << " " << getStr(instructionInfo, bus, address) << "\n";
             address += instructionInfo.bytes;
         }
         return oss.str();
     }
 
-    std::string InstructionHelper::getStr(const InstructionInfo& info, const Mapper& mapper, uint16_t address)
+    std::string InstructionHelper::getStr(const InstructionInfo& info, Bus* bus, uint16_t address)
     {
         std::ostringstream oss;
         oss << std::hex << std::uppercase << info.name;
@@ -99,8 +99,8 @@ namespace CPU
         
         uint8_t lowByte;
         uint8_t highByte;
-        mapper.read<AS::CPU>(address, lowByte);
-        mapper.read<AS::CPU>(address + 1, highByte);
+        bus->readCPU(address, lowByte);
+        bus->readCPU(address + 1, highByte);
 
         uint16_t twoBytes = make16(lowByte, highByte);
 

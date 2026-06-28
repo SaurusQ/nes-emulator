@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
         registerStr = nes.getCPU().getRegisterStatusStr(statusRegister);
         if (nes.getCPU().nextInstruction())
         {
-            instructionStr = CPU::InstructionHelper::getInstructionListString(nes.getCPU().getCurrentAddress(), nes.getMapper(), 3);
+            instructionStr = CPU::InstructionHelper::getInstructionListString(nes.getCPU().getCurrentAddress(), nes.getBus(), 3);
         }
         
 
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
         std::tie(previousBottomX, previousBottomY) = drawHandler.drawText(instructionStr, statusPanelX, previousBottomY + 20, true);
 
         //drawHandler.drawPPU(nes.getPPU().getScreenBuffer(), {600.0f, 10.0f, 4.3f*283.0f, 4.3f*242.0f});
-        drawHandler.drawPatternTable(nes.getPPU().getPatternTableAddress(), {600.0f, 10.0f, 4.3f*256.0f, 4.3f*128.0f});
+        // TODO drawHandler.drawPatternTable(nes.getPPU().getPatternTableAddress(), {600.0f, 10.0f, 4.3f*256.0f, 4.3f*128.0f});
 
 
         SDL_RenderPresent(renderer);
