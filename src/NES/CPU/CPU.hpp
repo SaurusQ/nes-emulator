@@ -42,7 +42,7 @@ namespace CPU
         template<InstructionType IT, AddressingMode AM>
         friend class Operation;
         public:
-            CPU(Bus& bus);
+            CPU(Bus* bus);
             ~CPU();
             void resetRegisters();
             void clockTick();
@@ -64,7 +64,7 @@ namespace CPU
             std::string getRegisterStatusStr(bool renderVersion) const;
     
             Registers registers_;
-            Bus& bus_;
+            Bus* bus_;
             
             uint64_t cycle_ = 0;
             uint64_t insCyclesToExecute_ = 0;

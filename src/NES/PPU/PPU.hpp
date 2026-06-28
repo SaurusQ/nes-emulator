@@ -15,7 +15,7 @@ namespace PPU
     class PPU
     {
         public:
-            PPU(Bus& bus);
+            PPU(Bus* bus);
             ~PPU() = default;
 
             void reset();
@@ -29,7 +29,7 @@ namespace PPU
             uint16_t getBaseNameTableAddress();
             uint16_t getSpritePatternTableAddress();
     
-            Bus& bus_;
+            Bus* bus_;
             Registers reg_;
             uint64_t cycle_ = 0;
             uint16_t dot_ = 0;

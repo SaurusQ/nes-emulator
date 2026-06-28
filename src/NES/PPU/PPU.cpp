@@ -3,7 +3,7 @@
 
 namespace PPU
 {
-    PPU::PPU(Bus& bus)
+    PPU::PPU(Bus* bus)
         : bus_(bus)
     {
         reg_.ppuctrl.reg    = 0x00;

@@ -21,7 +21,9 @@ class NES
 
         const CPU::CPU& getCPU() const { return cpu_; }
         const PPU::PPU& getPPU() const { return ppu_; }
-        const Mapper& getMapper() const { return *mapper_; }
+        const Mapper* getMapper() const { return mapper_; }
+        const RAM& getRAM() const { return ram_; }
+        const VRAM& getVRAM() const { return vram_; }
 
     private:
         CPU::CPU cpu_;

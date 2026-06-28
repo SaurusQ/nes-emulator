@@ -1,8 +1,9 @@
 #pragma once
 
+#include "../PPU/PPU.hpp"
+#include "../BusDevice.hpp"
 #include "../RAM.hpp"
 #include "../VRAM.hpp"
-#include "../PPU/PPU.hpp"
 
 #include <cstdint>
 
@@ -15,7 +16,7 @@ enum class Addressspace
     UNK
 };
 
-class Mapper
+class Mapper : public BusDevice
 {
     public:
         Mapper() = default;

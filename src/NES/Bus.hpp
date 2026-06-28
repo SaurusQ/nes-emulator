@@ -1,26 +1,39 @@
 #pragma once
 
-#include "Cartridge/Mapper.hpp"
-#include "RAM.hpp"
-#include "VRAM.hpp"
+#include "BusDevice.hpp"
 
 #include <cstdint>
+#include <vector>
+#include <functional>
 
 class Bus
 {
     public:
-        Bus(Mapper* mapper, PPU::Registers& ppu, RAM& ram);
+        Bus() = default;
         ~Bus() = default;
 
-        void readCPU(uint16_t address, uint8_t& data);
-        void storeCPU(uint16_t address, uint8_t data);
+        void read(uint16_t address, uint8_t& data)
+        {
+            readTable_[address](address,data);
+        }
+
+        void store(uint16_t address, uint8_t data)
+        {
+            storeTable_[address](address, data);
+        }
+
+        void attach(BusDevice* device)
+        {
+            for (uint32_t addr = device->start(); addr <= device->end(); ++addr) {
+                readTable_[addr] = &BusDevice::read;
+                storeTable_[addr] = &BusDevice::store;
+            }
+        }
 
     private:
-        Mapper*         mapper_;
-        PPU::Registers& ppu_;
-        RAM&            ram_;
-    
-        uint8_t lastReadCPU_ = 0x00;
-        uint8_t lastReadPPU_ = 0x00;
-};
 
+        std::vector<std::function<void(uint16_t, uint8_t&)>> storeTable_;
+        std::vector<std::function<void(uint16_t, uint8_t)>>  readTable_;
+
+        uint8_t lastRead_ = 0x00;
+};
