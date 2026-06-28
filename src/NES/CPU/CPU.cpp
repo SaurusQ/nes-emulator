@@ -1,5 +1,6 @@
 
 #include "CPU.hpp"
+#include "../Bus.hpp"
 
 #include "OpcodeTable.hpp"
 
@@ -70,7 +71,7 @@ namespace CPU
                 oss << "   ";
             }
     
-            oss << InstructionHelper::getInstructionString(insInfo, registers_.PC, mapper_)
+            oss << InstructionHelper::getInstructionString(insInfo, registers_.PC, *bus_)
                 <<   "A:" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.A)
                 <<  " X:" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.X)
                 <<  " Y:" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(registers_.Y)

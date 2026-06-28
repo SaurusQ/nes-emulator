@@ -10,7 +10,7 @@
 
 namespace CPU
 {
-    std::string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, const Mapper& mapper)
+    std::string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, Bus& bus_)
     {
         std::ostringstream oss;
         if (std::strlen(info.name) == 3) oss << " ";
@@ -22,7 +22,7 @@ namespace CPU
         for (int i = 0; i < info.bytes; i++)
         {
             uint8_t byte;
-            mapper.read<AS::CPU>(address + i, byte); // TODO how the lookahead should be done? Limits=
+            bus_.readCPU(address + i, byte); // TODO how the lookahead should be done? Limits=
             bytes.push_back(byte);
         }
         uint16_t twoBytes = 0;

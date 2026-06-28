@@ -24,10 +24,10 @@ class NES
         const Mapper* getMapper() const { return mapper_; }
         const RAM& getRAM() const { return ram_; }
         const VRAM& getVRAM() const { return vram_; }
-
+    
     private:
-        CPU::CPU cpu_;
-        PPU::PPU ppu_;
+        CPU_t cpu_;
+        PPU_t ppu_;
         Bus bus_;
         RAM ram_;
         VRAM vram_;

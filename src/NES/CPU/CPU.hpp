@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Definitions.hpp"
-#include "../Bus.hpp"
 
 #include <cstdint>
 #include <fstream>
 #include <filesystem>
 
+class Bus;
 namespace CPU
 { 
     typedef union
@@ -74,3 +74,5 @@ namespace CPU
             const std::filesystem::path tracePath_ = "./trace/trace.log";
     };
 }
+
+using CPU_t = CPU::CPU;

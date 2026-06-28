@@ -1,5 +1,6 @@
 
 #include "PPU.hpp"
+#include "../Bus.hpp"
 
 namespace PPU
 {
@@ -21,6 +22,16 @@ namespace PPU
         std::fill(screenBuffer_.begin(), screenBuffer_.end(), Pixel{100, 0, 0});
     }
     
+    void PPU::read(uint16_t address, uint8_t& data)
+    {
+        data = reg_.getMemoryPtr()[address];
+    }
+
+    void PPU::store(uint16_t address, uint8_t data)
+    {
+        reg_.getMemoryPtr()[address] = data;
+    }
+
     void PPU::reset()
     {
         reg_.ppuctrl.reg    = 0x00;

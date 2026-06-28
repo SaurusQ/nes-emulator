@@ -63,8 +63,8 @@ namespace CPU
     class InstructionHelper
     {
         public:
-            static std::string getInstructionString(const InstructionInfo& info, uint16_t address, const Mapper& mapper);
-            static std::string getInstructionListString(uint16_t address, const Mapper& mapper, unsigned int count);
-            static std::string getStr(const InstructionInfo& info, const Mapper& mapper, uint16_t address);
+            static std::string getInstructionString(const InstructionInfo& info, uint16_t address);
+            static std::string getInstructionListString(uint16_t address, unsigned int count);
+            static std::string getStr(const InstructionInfo& info, uint16_t address);
     };
 }

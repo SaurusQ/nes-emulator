@@ -11,9 +11,9 @@ NES::NES(Mapper* mapper)
     : mapper_(mapper)
     , ram_()
     , vram_()
-    , bus_(mapper_, ppu_.getRegisters(), ram_)
-    , cpu_(bus_)
-    , ppu_(bus_)
+    , bus_(&cpu_, &ppu_, &ram_, &vram_)
+    , cpu_(&bus_)
+    , ppu_(&bus_)
 {
     mapper_->attach(&vram_);
 }

@@ -2,13 +2,12 @@
 
 #include "Registers.hpp"
 #include "Definitions.hpp"
-#include "../Bus.hpp"
 #include "../Addressable.hpp"
 
 #include <cstdint>
 #include <vector>
 
-
+class Bus;
 class Mapper;
 namespace PPU
 {
@@ -17,6 +16,9 @@ namespace PPU
         public:
             PPU(Bus* bus);
             ~PPU() = default;
+
+            void read(uint16_t address, uint8_t& data);
+            void store(uint16_t address, uint8_t data);
 
             void reset();
             void tick();
@@ -36,3 +38,5 @@ namespace PPU
             std::vector<Pixel> screenBuffer_;
     };
 }
+
+using PPU_t = PPU::PPU;

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdint>
-
+#include <cstddef>
+#include "../Addressable.hpp"
 namespace PPU
 {
     constexpr size_t PPU_REGISTERS_SIZE = 8;

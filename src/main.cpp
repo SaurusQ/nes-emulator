@@ -57,7 +57,9 @@ int main(int argc, char* argv[])
     DrawHandler drawHandler(renderer);
     EventHandler eventHandler;
 
-    NES nes;
+    Mapper mapper = Mapper(); // TODO
+
+    NES nes(&mapper);
     nes.powerOn();
     nes.loadDotNESDirectToMemory("./program/nestest.nes");
     nes.getCPU().startTrace();
