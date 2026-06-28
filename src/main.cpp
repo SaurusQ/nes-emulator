@@ -3,6 +3,7 @@
 #include "DrawHandler.hpp"
 #include "NES/CPU/Instruction.hpp"
 #include "NES/NES.hpp"
+#include "NES/Cartridge/Mappers/M_000.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -57,9 +58,9 @@ int main(int argc, char* argv[])
     DrawHandler drawHandler(renderer);
     EventHandler eventHandler;
 
-    Mapper mapper = Mapper(); // TODO
+    Mapper* mapper = new M_000(); // TODO
 
-    NES nes(&mapper);
+    NES nes(mapper);
     nes.powerOn();
     nes.loadDotNESDirectToMemory("./program/nestest.nes");
     nes.getCPU().startTrace();
