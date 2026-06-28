@@ -18,6 +18,8 @@ class Bus
 
         void attachMapper(Mapper* mapper) { mapper_ = mapper; }
 
+        void peekCPU(uint16_t address, uint8_t& data) const;
+
         void readCPU(uint16_t address, uint8_t& data);
         void storeCPU(uint16_t address, uint8_t data);
 

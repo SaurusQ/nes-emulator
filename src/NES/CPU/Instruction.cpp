@@ -10,7 +10,7 @@
 
 namespace CPU
 {
-    std::string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, Bus* bus)
+    std::string InstructionHelper::getInstructionString(const InstructionInfo& info, uint16_t address, const Bus* bus)
     {
         std::ostringstream oss;
         if (std::strlen(info.name) == 3) oss << " ";
@@ -22,7 +22,7 @@ namespace CPU
         for (int i = 0; i < info.bytes; i++)
         {
             uint8_t byte;
-            bus->readCPU(address + i, byte); // TODO how the lookahead should be done? Limits=
+            bus->peekCPU(address + i, byte); // TODO how the lookahead should be done? Limits=
             bytes.push_back(byte);
         }
         uint16_t twoBytes = 0;
@@ -73,7 +73,7 @@ namespace CPU
         return s.append(pad, ' ');
     }
 
-    std::string InstructionHelper::getInstructionListString(uint16_t address, Bus* bus, unsigned int count)
+    std::string InstructionHelper::getInstructionListString(uint16_t address, const Bus* bus, unsigned int count)
     {
         std::ostringstream oss;
         oss << std::hex << std::uppercase;
@@ -81,7 +81,7 @@ namespace CPU
         for (unsigned int instructionNum = 0; instructionNum < count; instructionNum++)
         {
             uint8_t opcode;
-            bus->readCPU(address, opcode);
+            bus->peekCPU(address, opcode);
             
             const InstructionInfo& instructionInfo = opcodeInfoTable[opcode];
             oss << "$" << std::setw(4) << std::setfill('0') << address << " " << getStr(instructionInfo, bus, address) << "\n";
@@ -90,7 +90,7 @@ namespace CPU
         return oss.str();
     }
 
-    std::string InstructionHelper::getStr(const InstructionInfo& info, Bus* bus, uint16_t address)
+    std::string InstructionHelper::getStr(const InstructionInfo& info, const Bus* bus, uint16_t address)
     {
         std::ostringstream oss;
         oss << std::hex << std::uppercase << info.name;
@@ -99,8 +99,8 @@ namespace CPU
         
         uint8_t lowByte;
         uint8_t highByte;
-        bus->readCPU(address, lowByte);
-        bus->readCPU(address + 1, highByte);
+        bus->peekCPU(address, lowByte);
+        bus->peekCPU(address + 1, highByte);
 
         uint16_t twoBytes = make16(lowByte, highByte);
 

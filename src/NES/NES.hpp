@@ -30,7 +30,7 @@ class NES
         Mapper* mapper_;
         RAM ram_;
         VRAM vram_;
+        Bus bus_;
         CPU_t cpu_;
         PPU_t ppu_;
-        Bus bus_;
 };
