@@ -73,8 +73,9 @@ namespace PPU
         friend class PPU;
         public:
             size_t size() const { return PPU_REGISTERS_SIZE; } // Do not expose internal registers
+            inline const uint8_t* getMemoryPtr() const { return reinterpret_cast<const uint8_t*>(this); }
         protected:
-            inline uint8_t* getMemoryPtr() { return reinterpret_cast<uint8_t*>(this); }
+            inline uint8_t* getMemoryPtrInternal() { return reinterpret_cast<uint8_t*>(this); }
 
             PPUCTRL ppuctrl;
             PPUMASK ppumask;

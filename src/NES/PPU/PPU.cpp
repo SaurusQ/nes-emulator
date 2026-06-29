@@ -29,7 +29,7 @@ namespace PPU
 
     void PPU::store(uint16_t address, uint8_t data)
     {
-        reg_.getMemoryPtr()[address] = data;
+        reg_.getMemoryPtrInternal()[address] = data;
     }
 
     void PPU::reset()

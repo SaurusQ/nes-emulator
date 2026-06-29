@@ -12,8 +12,10 @@ class VRAM
         ~VRAM() = default;
 
         size_t size() const { return PPU_VRAM_SIZE; }
+        inline const uint8_t* getMemoryPtr() const { return vram_; }
+
     protected:
-        uint8_t* getMemoryPtr() { return vram_; }
+        uint8_t* getMemoryPtrInternal() { return vram_; }
     private:
         uint8_t vram_[PPU_VRAM_SIZE];
 };

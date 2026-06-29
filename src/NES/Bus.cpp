@@ -1,5 +1,6 @@
 #include "Bus.hpp"
 
+#include <iostream>
 
 Bus::Bus(CPU_t *cpu, PPU_t *ppu, RAM *ram, VRAM *vram)
     : cpu_(cpu), ppu_(ppu), ram_(ram), vram_(vram)

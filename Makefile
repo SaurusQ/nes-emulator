@@ -13,3 +13,4 @@ build: cmake
 
 clean:
 	@$(MAKE) -C $(BUILD_DIR) clean
+	rm -rf $(BUILD_DIR)

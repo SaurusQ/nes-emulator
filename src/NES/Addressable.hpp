@@ -12,9 +12,11 @@ class Addressable
         virtual ~Addressable() = default;
 
         virtual void read(uint16_t address, uint8_t& data) const { data = this->getMemoryPtr()[address]; }
-        virtual void store(uint16_t address, uint8_t data) { this->getMemoryPtr()[address] = data; }
+        virtual void store(uint16_t address, uint8_t data) { this->getMemoryPtrInternal()[address] = data; }
+        
         virtual size_t size() const = 0;
-        virtual inline const uint8_t* getMemoryPtr() const { return this->getMemoryPtr(); }
+        virtual inline const uint8_t* getMemoryPtr() const = 0;
+
         std::string getMemoryRegionStr(uint16_t address, size_t size) const
         {
             std::ostringstream oss;
@@ -33,5 +35,5 @@ class Addressable
             return oss.str();
         }
     protected:
-        virtual inline uint8_t* getMemoryPtr() = 0;
+        virtual inline uint8_t* getMemoryPtrInternal() = 0;
 };
